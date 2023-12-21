@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,24 +9,24 @@ namespace RPGSetting
     public class Status
     {
         public string name;
-        // HP °ü·Ã
+        // HP ê´€ë ¨
         public int maxHp;
         public int curHp;
         public int equipHp;
-        // MP °ü·Ã -> ÃÑ¾Ë ¼ö·Î ÇÏ´Â°Ç ¾î¶³±î?
+        // MP ê´€ë ¨ -> ì´ì•Œ ìˆ˜ë¡œ í•˜ëŠ”ê±´ ì–´ë–¨ê¹Œ?
         public int maxMp;
         public int curMp;
         public int equipMp;
-        // Á¤·É °ü·Ã
+        // ì •ë ¹ ê´€ë ¨
         public int maxFp;
         public int curFp;
         public int equipFp;
-        // °ø°İ °ü·Ã
+        // ê³µê²© ê´€ë ¨
         public int curAtk;
         public int equipAtk;
 
 
-        // HP, MP, Á¤·É ¼öÄ¡ ºÒ·¯¿À±â
+        // HP, MP, ì •ë ¹ ìˆ˜ì¹˜ ë¶ˆëŸ¬ì˜¤ê¸°
         public int GetFinalHp()
         {
             return maxHp + equipHp;
@@ -62,7 +62,7 @@ namespace RPGSetting
             return curAtk + equipAtk;
         }
 
-        // »ı¼ºÀÚ
+        // ìƒì„±ì
         public Status(string name = "", int maxHp = 5, int curHp = 5, int curAtk = 1)
         {
             this.name = name;
@@ -71,7 +71,7 @@ namespace RPGSetting
             this.curAtk = curAtk;
         }
 
-        // µ¥¹ÌÁö ¹Ş´Â °æ¿ì
+        // ë°ë¯¸ì§€ ë°›ëŠ” ê²½ìš°
         public void Demeged(int demage)
         {
             this.curHp -= demage;
@@ -81,7 +81,7 @@ namespace RPGSetting
             }
         }
 
-        // È¸º¹ÇÏ´Â °æ¿ì
+        // íšŒë³µí•˜ëŠ” ê²½ìš°
         public void Healing(int healing)
         {
             int finalHp = GetFinalHp();
@@ -104,11 +104,11 @@ namespace RPGSetting
     [Serializable]
     public class Item
     {
-        public String type; // ¼Ò¸ğÇ°, ÀåºñÇ°, ±âÅ¸
+        public String type; // ì†Œëª¨í’ˆ, ì¥ë¹„í’ˆ, ê¸°íƒ€
         public String itemCode;
         public String name;
         public String icon;
-        public int num; // ¼ö·®
+        public int num; // ìˆ˜ëŸ‰
         public String explain;
         public int money;
         public int plusAttack;

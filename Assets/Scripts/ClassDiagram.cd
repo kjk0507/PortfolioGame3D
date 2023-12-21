@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EnemyControl">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="EnemyControl.E_Enemy_Type" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Scripts\EnemyControll.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="EnemyControl.E_AI_STATUS" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Scripts\EnemyControll.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AwQAARBrAiAIEACAAIgEAAIAAAUAAKAAQBAIAAECABA=</HashCode>
+      <FileName>Assets\Scripts\EnemyControll.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerControl">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="PlayerControl.E_Player_State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\Scripts\PlayerControl.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAQsARlIAiAAAACBCEAAIEKEAABBAAAwkYABCAACAIA=</HashCode>
+      <FileName>Assets\Scripts\PlayerControl.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerControl_org" Collapsed="true">
+    <Position X="15.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAQAIAiAAAAAAAEAAIEKAAABAAAAgkAAACAACAAA=</HashCode>
+      <FileName>Assets\Scripts\PlayerControl_org.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.Status">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAIEAAAAAAAAAAAACEEAACACAEgFABAAAAAAAAFoAAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.Item">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABDAAAAAAAQAAAAAAAAAAAAAFAAQAAQAAAAAAEAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>

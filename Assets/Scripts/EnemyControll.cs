@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using RPGSetting;
@@ -11,24 +11,24 @@ public class EnemyControl : MonoBehaviour
     Rigidbody m_rigidbody;
     Animator m_animator;
 
-    bool isDetected = false;  // ÇÃ·¹ÀÌ¾î ¹ß°ß
+    bool isDetected = false;  // í”Œë ˆì´ì–´ ë°œê²¬
     GameObject m_player = null;
-    int randomDirection = 1;  // ÃÊ±â Àû ÀÌµ¿¹æÇâ(¿À¸¥ÂÊ)
+    int randomDirection = 1;  // ì´ˆê¸° ì  ì´ë™ë°©í–¥(ì˜¤ë¥¸ìª½)
     bool isAttack = false;
 
-    // ÀÎ½ºÆåÅÍ ¼öÁ¤ °¡´É Ç×¸ñ
+    // ì¸ìŠ¤í™í„° ìˆ˜ì • ê°€ëŠ¥ í•­ëª©
     public float m_moveSpeed = 2;
 
-    // Tracking °ü·Ã ½Ã°£ Á¶Àı
+    // Tracking ê´€ë ¨ ì‹œê°„ ì¡°ì ˆ
     private float lastDirectionChangeTime;
     private float directionChangeInterval = 5f;
 
-    // Thinking °ü·Ã ½Ã°£ Á¶Àı
+    // Thinking ê´€ë ¨ ì‹œê°„ ì¡°ì ˆ
     float thinkingDuration = 2.5f;
     float thinkingStartTime;
 
 
-    // ±âº» ¼±¾ğ
+    // ê¸°ë³¸ ì„ ì–¸
     public E_Enemy_Type e_enemyType;
     public E_AI_STATUS e_status = E_AI_STATUS.STANDING;
     public Status m_status = new Status();
@@ -40,12 +40,12 @@ public class EnemyControl : MonoBehaviour
 
     public enum E_AI_STATUS
     {
-        STANDING,  // °¡¸¸È÷ ¼­ÀÖ±â
-        TRACKING,  // ÁÂ ¿ì·Î ÀÌµ¿
-        THINKING,  // ³¶¶°·¯Áö µµÂø½Ã ¸ØÃã
-        MOVE,      // ÇÃ·¹ÀÌ¾î ÀÎ½Ä ÈÄ ÀÌµ¿
-        ATTACK,    // ÇÃ·¹ÀÌ¾î °ø°İ
-        SKILL      // ½ºÅ³ ¹ßµ¿
+        STANDING,  // ê°€ë§Œíˆ ì„œìˆê¸°
+        TRACKING,  // ì¢Œ ìš°ë¡œ ì´ë™
+        THINKING,  // ë‚­ë– ëŸ¬ì§€ ë„ì°©ì‹œ ë©ˆì¶¤
+        MOVE,      // í”Œë ˆì´ì–´ ì¸ì‹ í›„ ì´ë™
+        ATTACK,    // í”Œë ˆì´ì–´ ê³µê²©
+        SKILL      // ìŠ¤í‚¬ ë°œë™
     }
 
     void Start()
@@ -92,15 +92,15 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    // ±×³É ¼­ÀÖ´Â ´Ü°è
+    // ê·¸ëƒ¥ ì„œìˆëŠ” ë‹¨ê³„
     void ProcessStanding(E_Enemy_Type e_enemyType)
     {
         if (e_enemyType == E_Enemy_Type.Skeleton)
         {
-            // ÇÃ·¹ÀÌ¾î ¹ß°ß
+            // í”Œë ˆì´ì–´ ë°œê²¬
             if (m_player != null && isDetected == true)
             {
-                // °Å¸® Àç°í move ¶Ç´Â attackÀ¸·Î
+                // ê±°ë¦¬ ì¬ê³  move ë˜ëŠ” attackìœ¼ë¡œ
                 e_status = E_AI_STATUS.MOVE;
                 return;
             }
@@ -112,12 +112,12 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    // ÁÂ ¿ì·Î ¿òÁ÷ÀÌ´Â ´Ü°è
+    // ì¢Œ ìš°ë¡œ ì›€ì§ì´ëŠ” ë‹¨ê³„
     void ProcessTracking(E_Enemy_Type e_enemyType)
     {
         if(e_enemyType == E_Enemy_Type.Skeleton)
         {
-            // ÇÃ·¹ÀÌ¾î ¹ß°ß½Ã ¹Ù·Î ÀüÈ¯
+            // í”Œë ˆì´ì–´ ë°œê²¬ì‹œ ë°”ë¡œ ì „í™˜
             if (m_player != null && isDetected == true)
             {
                 float distance = Vector3.Distance(transform.position, m_player.transform.position);
@@ -139,7 +139,7 @@ public class EnemyControl : MonoBehaviour
                 lastDirectionChangeTime = Time.time;
             }
 
-            // Àıº®ÀÌ¸é thinkingÀ¸·Î
+            // ì ˆë²½ì´ë©´ thinkingìœ¼ë¡œ
             if(IsCliff())
             {
                 e_status = E_AI_STATUS.THINKING;
@@ -152,7 +152,7 @@ public class EnemyControl : MonoBehaviour
     {
         if (e_enemyType == E_Enemy_Type.Skeleton)
         {
-            // ÇÃ·¹ÀÌ¾î ¹ß°ß½Ã ¹Ù·Î ÀüÈ¯
+            // í”Œë ˆì´ì–´ ë°œê²¬ì‹œ ë°”ë¡œ ì „í™˜
             if (m_player != null && isDetected == true)
             {
                 e_status = E_AI_STATUS.MOVE;
@@ -168,30 +168,31 @@ public class EnemyControl : MonoBehaviour
 
     }
 
-    // ÇÃ·¹ÀÌ¾î ¹ß°ßÇÏ°í ´Ù°¡°¡´Â ´Ü°è
+    // í”Œë ˆì´ì–´ ë°œê²¬í•˜ê³  ë‹¤ê°€ê°€ëŠ” ë‹¨ê³„
     void ProcessMove(E_Enemy_Type e_enemyType)
     {
         if (e_enemyType == E_Enemy_Type.Skeleton)
         {
-            // Àıº®ÀÌ¸é thinkingÀ¸·Î 
-            if (IsCliff())
-            {
-                e_status = E_AI_STATUS.THINKING;
-                thinkingStartTime = Time.time;
-            }
+            // ì ˆë²½ì´ë©´ thinkingìœ¼ë¡œ 
+            //if (IsCliff())
+            //{
+            //    e_status = E_AI_STATUS.THINKING;
+            //    thinkingStartTime = Time.time;
+            //    return;
+            //}
 
             if(isDetected && m_player != null)
             {
                 
-                // ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº½
+                // í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë´„
                 LookPlayer(m_player);
 
-                // ÇÃ·¹ÀÌ¾î ¹æÇâÀ» È®ÀÎ(90µµ È¸ÀüÇÑ »óÅÂ¶ó ¹æÇâÀÌ z)
+                // í”Œë ˆì´ì–´ ë°©í–¥ì„ í™•ì¸(90ë„ íšŒì „í•œ ìƒíƒœë¼ ë°©í–¥ì´ z)
                 Vector3 direction = new Vector3(m_transform.localScale.z, 0, 0);
                 direction.Normalize();
-                float distance = Vector3.Distance(transform.position, m_player.transform.position);
+                float distance = Vector3.Distance(m_transform.position, m_player.transform.position);
 
-                Debug.Log("still Moving");
+                //Debug.Log("still Moving");
                 if (distance > 3)
                 {
                     m_rigidbody.velocity = new Vector3(direction.x * 5f, m_rigidbody.velocity.y, 0);
@@ -210,7 +211,7 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    // ÇÃ·¹ÀÌ¾î ¹ß°ßÇÏ°í °ø°İÇÏ´Â ´Ü°è
+    // í”Œë ˆì´ì–´ ë°œê²¬í•˜ê³  ê³µê²©í•˜ëŠ” ë‹¨ê³„
     void ProcessAttack(E_Enemy_Type e_enemyType)
     {
         if (isAttack)
@@ -222,7 +223,7 @@ public class EnemyControl : MonoBehaviour
         }
     }
 
-    // ¶§¶§·Î ½ºÅ³ ¹ßµ¿
+    // ë•Œë•Œë¡œ ìŠ¤í‚¬ ë°œë™
     void ProcessSkill(E_Enemy_Type e_enemyType)
     {
 
@@ -230,7 +231,7 @@ public class EnemyControl : MonoBehaviour
 
     void ChangeDirection()
     {
-        int randomInt = Random.Range(1, 3);// 1ÀÌ¸é ¿ŞÂÊ, 2ÀÌ¸é ¿À¸¥ÂÊ
+        int randomInt = Random.Range(1, 3);// 1ì´ë©´ ì™¼ìª½, 2ì´ë©´ ì˜¤ë¥¸ìª½
         if (randomInt == 1)
         {
             randomDirection = -1;
@@ -288,4 +289,18 @@ public class EnemyControl : MonoBehaviour
     //    Vector3 endPosition = ray.origin + ray.direction * rayLength;
     //    Debug.DrawLine(ray.origin, endPosition, Color.blue, 10);
     //}
+
+    public void OnGUI()
+    {
+        //ì˜¤ë¸Œì íŠ¸ì˜ 3dì¢Œí‘œë¥¼ 2dì¢Œí‘œ(ìŠ¤í¬ë¦°ì¢Œí‘œ)ë¡œ ë³€í™˜í•˜ì—¬ GUIë¥¼ ê·¸ë¦°ë‹¤.
+        Vector3 vPos = this.transform.position;
+        Vector3 vPosToScreen = Camera.main.WorldToScreenPoint(vPos); //ì›”ë“œì¢Œí‘œë¥¼ ìŠ¤í¬ë¦°ì¢Œí‘œë¡œ ë³€í™˜í•œë‹¤.
+        vPosToScreen.y = Screen.height - vPosToScreen.y; //yì¢Œí‘œì˜ ì¶•ì´ í•˜ë‹¨ì„ ê¸°ì¤€ìœ¼ë¡œ ì •ë ¬ë˜ë¯€ë¡œ ìƒë‹¨ìœ¼ë¡œ ë³€í™˜í•œë‹¤.
+        int h = 40;
+        int w = 100;
+        //Rect rectGUI = new Rect(vPosToScreen.x, vPosToScreen.y, w, h);
+        Rect rectGUI = new Rect(vPosToScreen.x - w / 2, vPosToScreen.y, w, h);
+        //GUI.Box(rectGUI, "MoveBlock:" + isMoveBlock);
+        GUI.Box(rectGUI, string.Format("HP:{0} / {1}", m_status.GetCurHp().ToString(), m_status.GetFinalHp().ToString()));
+    }
 }

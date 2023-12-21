@@ -4,19 +4,20 @@ using System.Collections;
 
 public class PlayerControl : MonoBehaviour
 {
-    // ¸â¹ö º¯¼ö
+    // ë©¤ë²„ ë³€ìˆ˜
     Transform m_transform;
     Rigidbody m_rigidbody;
     Animator m_animator;
 
-    // ½ºÅ×ÀÌÅÍ½º
-    Status m_status = new Status();
+    // ìŠ¤í…Œì´í„°ìŠ¤
+    public Status m_status = new Status();
 
-    // º¯È¯ º¯¼ö
-    public float m_moveSpeed = 5f;   // ÀÌµ¿¼Óµµ
-    public float m_jumpPower = 12f;  // Á¡ÇÁ·Â
+    // ë³€í™˜ ë³€ìˆ˜
+    public float m_moveSpeed = 5f;   // ì´ë™ì†ë„
+    public float m_jumpPower = 12f;  // ì í”„ë ¥
     public float jumpPosition = 1f;
     public float groundPosition = 1f;
+    public float shotTime = 1f;
 
     public GameObject playerArrow;
     public GameObject shotPosition;
@@ -24,26 +25,30 @@ public class PlayerControl : MonoBehaviour
 
     public GameObject CrossBow;
 
-    // Å¬·¡½º º¯¼ö
+    public GameObject shieldPrefab;
+    private GameObject currentShield;
+
+    // í´ë˜ìŠ¤ ë³€ìˆ˜
     float inputHorizontal;
 
-    // °¡´É ¿©ºÎ º¯¼ö
-    bool isMove = true;  // ÀÌµ¿ °¡´É ¿©ºÎ
-    //bool isDash = false;  // ´ë½Ã °¡´É ¿©ºÎ
-    bool IsDoubleJump = false;  // ÀÌ´Ü Á¡ÇÁ °¡´É ¿©ºÎ
+    // ê°€ëŠ¥ ì—¬ë¶€ ë³€ìˆ˜
+    bool isMove = true;  // ì´ë™ ê°€ëŠ¥ ì—¬ë¶€
+    //bool isDash = false;  // ëŒ€ì‹œ ê°€ëŠ¥ ì—¬ë¶€
+    bool IsDoubleJump = false;  // ì´ë‹¨ ì í”„ ê°€ëŠ¥ ì—¬ë¶€
     bool isDamage = false;
     bool isJump = false;
+    bool isShot = false;
 
-    // ÀÔ·Â º¯¼ö
-    bool inputJump = false;  // Á¡ÇÁÅ° ÀÔ·Â ¿©ºÎ
-    bool inputAttack = false;  // °ø°İÅ° ÀÔ·Â ¿©ºÎ
+    // ì…ë ¥ ë³€ìˆ˜
+    bool inputJump = false;  // ì í”„í‚¤ ì…ë ¥ ì—¬ë¶€
+    bool inputAttack = false;  // ê³µê²©í‚¤ ì…ë ¥ ì—¬ë¶€
 
-    // ÀÔ·Â ½Ã°£
+    // ì…ë ¥ ì‹œê°„
     private float lastAttackTime;
     private float standAttackCooldown = 0.4f;
     private float runningAttackCooldown = 2f;
 
-    // ÇÃ·¹ÀÌ¾î À¯ÇÑ»óÅÂ¸Ó½Å
+    // í”Œë ˆì´ì–´ ìœ í•œìƒíƒœë¨¸ì‹ 
     enum E_Player_State { STANDING, RUNNING, STANDINGSHOT, RUNNINGSHOT, JUMP, DOUBLEJUMP, DAMAGE };
     E_Player_State playerState;
 
@@ -57,10 +62,10 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        // ÇÇ°İ ½Ã ¸ğµç ¿òÁ÷ÀÓ Á¤Áö
+        // í”¼ê²© ì‹œ ëª¨ë“  ì›€ì§ì„ ì •ì§€
         if(!isDamage)
         {
-            // ÁÂ¿ì ÀÌµ¿ ±¸Çö
+            // ì¢Œìš° ì´ë™ êµ¬í˜„
             if (isMove)
             {
                 inputHorizontal = Input.GetAxis("Horizontal");
@@ -75,24 +80,36 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            // Á¡ÇÁ ±¸Çö
+            // ì í”„ êµ¬í˜„
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 inputJump = true;
             }
 
-            // (ÀÓ½Ã)´õºí Á¡ÇÁ ±¸Çö
+            // (ì„ì‹œ)ë”ë¸” ì í”„ êµ¬í˜„
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 IsDoubleJump = true;
             }
 
-            // °ø°İ ±¸Çö
+            // ê³µê²© êµ¬í˜„
             if (Input.GetKeyDown(KeyCode.Z))
             {
                 inputAttack = true;
                 //ShotArrow();
                 lastAttackTime = Time.time;
+            }
+
+            // ë°©ì–´ë§‰ êµ¬í˜„
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                GenerateShield();
+            }
+
+            // ë°©ì–´ë§‰ì´ ìƒì„±ë˜ì–´ ìˆê³  í”Œë ˆì´ì–´ê°€ ì¡´ì¬í•œë‹¤ë©´ í”Œë ˆì´ì–´ë¥¼ ë”°ë¼ë‹¤ë‹ˆê²Œ í•¨
+            if (currentShield != null && m_transform != null)
+            {
+                UpdateShieldPosition();
             }
         }
 
@@ -127,13 +144,13 @@ public class PlayerControl : MonoBehaviour
                 break;
             case E_Player_State.JUMP:
                 ProcessJump();
-                CrossBow.transform.localPosition = new Vector3(0.02f, -0.14f, -0.03f);
-                CrossBow.transform.localRotation = Quaternion.Euler(-8f, 172f, -34f);
+                CrossBow.transform.localPosition = new Vector3(-0.01f, 0.08f, 0.08f);
+                CrossBow.transform.localRotation = Quaternion.Euler(45f, 380f, 127f);
                 break;
             case E_Player_State.DOUBLEJUMP:
                 ProcessDoubleJump();
-                CrossBow.transform.localPosition = new Vector3(0.02f, -0.14f, -0.03f);
-                CrossBow.transform.localRotation = Quaternion.Euler(-8f, 172f, -34f);
+                CrossBow.transform.localPosition = new Vector3(-0.01f, 0.08f, 0.08f);
+                CrossBow.transform.localRotation = Quaternion.Euler(45f, 380f, 127f);
                 break;
             case E_Player_State.DAMAGE:
                 ProcessDamage();
@@ -141,22 +158,22 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    // »óÅÂ ÇÔ¼ö
+    // ìƒíƒœ í•¨ìˆ˜
     void ProcessStanding()
     {
         //m_rigidbody.velocity = new Vector3(0, m_rigidbody.transform.position.y, 0);
         m_rigidbody.velocity = Vector3.zero;
 
-        // °¡´ÉÇÑ µ¿ÀÛ : Running, StandingShot, Jump, Throw, Damage
-        // À­ ÄÚµå´Â µ¿ÀÛ Àü´Ş, ¹Ø ÄÚµå´Â ±× ÇÔ¼ö¿¡¼­ ÇØ¾ßÇÒ µ¿ÀÛ
-        // ÇÇ°İ ¹ŞÀ» ½Ã ¸ØÃã
+        // ê°€ëŠ¥í•œ ë™ì‘ : Running, StandingShot, Jump, Throw, Damage
+        // ìœ— ì½”ë“œëŠ” ë™ì‘ ì „ë‹¬, ë°‘ ì½”ë“œëŠ” ê·¸ í•¨ìˆ˜ì—ì„œ í•´ì•¼í•  ë™ì‘
+        // í”¼ê²© ë°›ì„ ì‹œ ë©ˆì¶¤
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
             return;
         }
 
-        // ÀÔ·Â°ªÀÌ ÀÖ´Ù¸é runningÀ¸·Î ÀüÈ¯
+        // ì…ë ¥ê°’ì´ ìˆë‹¤ë©´ runningìœ¼ë¡œ ì „í™˜
         if (inputHorizontal != 0)
         {
             playerState = E_Player_State.RUNNING;
@@ -179,7 +196,7 @@ public class PlayerControl : MonoBehaviour
 
     void ProcessRunning()
     {
-        // °¡´ÉÇÑ µ¿ÀÛ : Standing, RunningShot, Jump, Damage
+        // ê°€ëŠ¥í•œ ë™ì‘ : Standing, RunningShot, Jump, Damage
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -205,13 +222,13 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
-        // ´Ş¸®±â ±¸Çö
+        // ë‹¬ë¦¬ê¸° êµ¬í˜„
         m_rigidbody.velocity = new Vector3(inputHorizontal * m_moveSpeed, m_rigidbody.velocity.y, 0);
     }
 
     void ProcessStandingShout()
     {
-        // °¡´ÉÇÑ µ¿ÀÛ : Standing, Running, Jump, Damage
+        // ê°€ëŠ¥í•œ ë™ì‘ : Standing, Running, Jump, Damage
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -247,7 +264,7 @@ public class PlayerControl : MonoBehaviour
 
     void ProcessRunningShot()
     {
-        // °¡´ÉÇÑ µ¿ÀÛ : Standing, Running, Jump, Damage
+        // ê°€ëŠ¥í•œ ë™ì‘ : Standing, Running, Jump, Damage
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -284,14 +301,14 @@ public class PlayerControl : MonoBehaviour
     {
         m_animator.SetBool("isGround", false);
 
-        // °¡´ÉÇÑ µ¿ÀÛ : Standing, DoubleJump, Damage
+        // ê°€ëŠ¥í•œ ë™ì‘ : Standing, DoubleJump, Damage
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
             return;
         }
 
-        // Á¡ÇÁ ÇÑ¹ø¸¸
+        // ì í”„ í•œë²ˆë§Œ
         if(inputJump && IsGrounded() && isJump)
         {
             m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x, 0);
@@ -312,8 +329,14 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
+        if (inputAttack)
+        {
+            ShotArrow();
+        }
+
         Invoke("JumpMotionStop", 0.05f);
         //JumpMotionStop();
+        IsEnemy();
     }
 
     void ProcessDoubleJump()
@@ -339,8 +362,14 @@ public class PlayerControl : MonoBehaviour
             m_rigidbody.velocity = new Vector3(inputHorizontal * m_moveSpeed, m_rigidbody.velocity.y, 0);
         }
 
+        if (inputAttack)
+        {
+            ShotArrow();
+        }
+
         Invoke("JumpMotionStop", 0.05f);
         //JumpMotionStop();
+        IsEnemy();
     }
 
     void ProcessDamage()
@@ -360,32 +389,48 @@ public class PlayerControl : MonoBehaviour
         {
             rotation = Quaternion.Euler(0f, -90f, 0f);
         }
-        GameObject objArrow = Instantiate(playerArrow, shotPosition.transform.position, rotation);
-        objArrow.GetComponent<Rigidbody>().velocity = new Vector3(m_transform.localScale.z * shotPower, 0, 0);
 
-        StartCoroutine(DestroyArrow(objArrow, 5f));
+        if (!isShot)
+        {
+            isShot = true;
+            GameObject objArrow = Instantiate(playerArrow, shotPosition.transform.position, rotation);
+            objArrow.GetComponent<Rigidbody>().velocity = new Vector3(m_transform.localScale.z * shotPower, 0, 0);
+
+            Invoke("ShotCoolTime",shotTime);
+        }
     }
 
-    IEnumerator DestroyArrow(GameObject objArrow, float delay)
+    void ShotCoolTime()
     {
-        yield return new WaitForSeconds(delay);
-
-        if (objArrow != null)
-        {
-            Destroy(objArrow);
-        }
+        isShot = false;
     }
 
     bool IsGrounded()
     {
         int layerMask = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Flatform"));
 
-        // ÀÌ ¸ğµ¨Àº position À§Ä¡°¡ ¹Ù´ÚÀÌ¶ó ¾à°£ À§¿¡¼­ È®ÀÎ°¡´É
+        // ì´ ëª¨ë¸ì€ position ìœ„ì¹˜ê°€ ë°”ë‹¥ì´ë¼ ì•½ê°„ ìœ„ì—ì„œ í™•ì¸ê°€ëŠ¥
         Vector3 tempPosition = new Vector3(m_transform.position.x, m_transform.position.y + jumpPosition, m_transform.position.z);
 
         //bool isHit = Physics.Raycast(m_transform.position, Vector3.down, 1.1f, layerMask);
         bool isHit = Physics.Raycast(tempPosition, Vector3.down, groundPosition, layerMask);
         return isHit;
+    }
+
+    void IsEnemy()
+    {
+        //Debug.Log("IsEnemy");
+        bool isEnemy = false;
+
+        int layerMask = (1 << LayerMask.NameToLayer("EnemyHitBox"));
+        Vector3 tempPosition = new Vector3(m_transform.position.x, m_transform.position.y + 0.5f, m_transform.position.z);
+        isEnemy = Physics.Raycast(tempPosition, Vector3.down, 1.1f, layerMask);
+        if(isEnemy)
+        {
+            //Debug.Log("Enemy");
+            m_rigidbody.velocity = new Vector3(m_transform.localScale.z * 3f, 0, 0);
+        }
+        //return isEnemy;
     }
 
     void JumpMotionStop()
@@ -419,6 +464,38 @@ public class PlayerControl : MonoBehaviour
         return;
     }
 
+    void GenerateShield()
+    {
+        // ì´ë¯¸ ìƒì„±ëœ ë°©ì–´ë§‰ì´ ìˆë‹¤ë©´ ì œê±°
+        if (currentShield != null)
+        {
+            Destroy(currentShield);
+        }
+
+        Vector3 shieldPosition = new Vector3(m_transform.position.x, m_transform.position.y + 1.5f, m_transform.position.z);
+
+        // ë°©ì–´ë§‰ ìƒì„± ë° ìœ„ì¹˜ ì„¤ì •
+        currentShield = Instantiate(shieldPrefab, shieldPosition, Quaternion.identity);
+
+        StartCoroutine(DestroyShield(currentShield, 3f));
+    }
+    void UpdateShieldPosition()
+    {
+        Vector3 shieldPosition = new Vector3(m_transform.position.x, m_transform.position.y + 1.5f, m_transform.position.z);
+        // í”Œë ˆì´ì–´ ìœ„ì¹˜ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ë°©ì–´ë§‰ ìœ„ì¹˜ ì¡°ì •
+        currentShield.transform.position = shieldPosition;
+    }
+
+    IEnumerator DestroyShield(GameObject currentShield, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (currentShield != null)
+        {
+            Destroy(currentShield);
+        }
+    }
+
     //private void OnGUI()
     //{
     //    Vector3 tempPosition = new Vector3(m_transform.position.x, m_transform.position.y + 1, m_transform.position.z);
@@ -427,5 +504,19 @@ public class PlayerControl : MonoBehaviour
     //    Vector3 endPosition = ray.origin + ray.direction * rayLength;
     //    Debug.DrawLine(ray.origin, ray.direction * rayLength, Color.blue);
     //    Debug.DrawLine(ray.origin, endPosition, Color.blue, 10);
+    //}
+
+    //public void OnGUI()
+    //{
+    //    //ì˜¤ë¸Œì íŠ¸ì˜ 3dì¢Œí‘œë¥¼ 2dì¢Œí‘œ(ìŠ¤í¬ë¦°ì¢Œí‘œ)ë¡œ ë³€í™˜í•˜ì—¬ GUIë¥¼ ê·¸ë¦°ë‹¤.
+    //    Vector3 vPos = this.transform.position;
+    //    Vector3 vPosToScreen = Camera.main.WorldToScreenPoint(vPos); //ì›”ë“œì¢Œí‘œë¥¼ ìŠ¤í¬ë¦°ì¢Œí‘œë¡œ ë³€í™˜í•œë‹¤.
+    //    vPosToScreen.y = Screen.height - vPosToScreen.y; //yì¢Œí‘œì˜ ì¶•ì´ í•˜ë‹¨ì„ ê¸°ì¤€ìœ¼ë¡œ ì •ë ¬ë˜ë¯€ë¡œ ìƒë‹¨ìœ¼ë¡œ ë³€í™˜í•œë‹¤.
+    //    int h = 40;
+    //    int w = 100;
+    //    //Rect rectGUI = new Rect(vPosToScreen.x, vPosToScreen.y, w, h);
+    //    Rect rectGUI = new Rect(vPosToScreen.x - w / 2, vPosToScreen.y, w, h);
+    //    //GUI.Box(rectGUI, "MoveBlock:" + isMoveBlock);
+    //    GUI.Box(rectGUI, string.Format("HP:{0} / {1}", m_status.GetCurHp().ToString(), m_status.GetFinalHp().ToString()));
     //}
 }

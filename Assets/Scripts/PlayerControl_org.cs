@@ -160,7 +160,7 @@ public class PlayerControl_org : MonoBehaviour
                 playerState = e_playerState.WAIT;
             }            
         }
-    }
+    }    
 
     //private void OnGUI()
     //{
