@@ -1,3 +1,4 @@
+using RPGSetting;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,15 +12,22 @@ public class GameManager : MonoBehaviour
     public GameObject m_inventory;
     public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND }
 
+    [SerializeField] ItemManager m_cItemManager = new ItemManager();
+    public ItemManager ItemManager { get { return m_cItemManager; } }
+
     public E_GUI_STATE m_curGUIState;
     static GameManager m_cInstance;
 
     bool isDeath = false;
     bool isActiveInventory = false;
 
+    public GUIInventory m_guiInventory;
+
     private void Awake()
     {
         m_cInstance = this;
+        m_cItemManager.Init();
+        m_cItemManager.SetPlayerAllData(m_player.GetComponent<PlayerControl>().m_status);
     }
 
     void Start()
@@ -127,17 +135,17 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(currentScene.name);
     }
 
-    public void PopupIventroy(int playerIdx = 0)
+    public void PopupIventroy()
     {
         if (m_inventory.activeSelf == false)
         {
-            //m_guiInventory.SetIventory(player);
+            m_guiInventory.SetIventory(m_player.GetComponent<PlayerControl>().m_status);
             m_inventory.SetActive(true);
         }
         else
         {
             m_inventory.SetActive(false);
-            //m_guiInventory.ResetIventoryButton();
+            m_guiInventory.ResetIventoryButton();
         }
     }
 }

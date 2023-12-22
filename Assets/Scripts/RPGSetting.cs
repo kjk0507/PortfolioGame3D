@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RPGSetting
 {
@@ -24,7 +25,8 @@ namespace RPGSetting
         // 공격 관련
         public int curAtk;
         public int equipAtk;
-
+        // 인벤토리 정보
+        public List<Item> inventory = new List<Item>();
 
         // HP, MP, 정령 수치 불러오기
         public int GetFinalHp()
@@ -99,6 +101,7 @@ namespace RPGSetting
             else
                 return true;
         }
+               
     }
 
     [Serializable]
@@ -114,14 +117,33 @@ namespace RPGSetting
         public int plusAttack;
         public int plusDefence;
 
-        public Item(string type, string itemCode, string name, int num, string explain, int money)
+        public Item(string type, string itemCode, string name, string icon, int num, string explain, int money)
         {
             this.type = type;
             this.itemCode = itemCode;
             this.name = name;
+            this.icon = icon;
             this.num = num;
             this.explain = explain;
             this.money = money;
+        }
+    }
+
+    public class ItemManager
+    {
+        List<Item> m_listItemManager = new List<Item>();
+
+        public void Init()
+        {
+            m_listItemManager.Add(new Item("A", "A01", "test1", "axe", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "A02", "test2", "bag", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "A03", "test3", "boots", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "A04", "test4", "cloaks", 1, "test1", 10)); //0
+        }
+
+        public void SetPlayerAllData(Status player)
+        {
+            player.inventory = m_listItemManager;
         }
     }
 }
