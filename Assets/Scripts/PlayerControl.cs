@@ -1,6 +1,7 @@
 using UnityEngine;
 using RPGSetting;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class PlayerControl : MonoBehaviour
     bool isDamage = false;
     bool isJump = false;
     bool isShot = false;
+    public bool isPlatform = false; // 이건 플랫폼에서 변경
 
     // 입력 변수
     bool inputJump = false;  // 점프키 입력 여부
@@ -68,7 +70,7 @@ public class PlayerControl : MonoBehaviour
             // 좌우 이동 구현
             if (isMove)
             {
-                inputHorizontal = Input.GetAxis("Horizontal");
+                inputHorizontal = Input.GetAxisRaw("Horizontal");
 
                 if (inputHorizontal > 0)
                 {
@@ -81,7 +83,7 @@ public class PlayerControl : MonoBehaviour
             }
 
             // 점프 구현
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && !inputJump)
             {
                 inputJump = true;
             }
@@ -93,7 +95,7 @@ public class PlayerControl : MonoBehaviour
             }
 
             // 공격 구현
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.Z) && !inputAttack)
             {
                 inputAttack = true;
                 //ShotArrow();
@@ -162,7 +164,17 @@ public class PlayerControl : MonoBehaviour
     void ProcessStanding()
     {
         //m_rigidbody.velocity = new Vector3(0, m_rigidbody.transform.position.y, 0);
-        m_rigidbody.velocity = Vector3.zero;
+        if (IsGrounded())
+        {
+            if (IsPlatform())
+            {
+                m_rigidbody.velocity = Vector3.zero;
+            }
+            else
+            {
+                m_rigidbody.velocity = Vector3.zero;
+            }
+        }
 
         // 가능한 동작 : Running, StandingShot, Jump, Throw, Damage
         // 윗 코드는 동작 전달, 밑 코드는 그 함수에서 해야할 동작
@@ -407,12 +419,22 @@ public class PlayerControl : MonoBehaviour
 
     bool IsGrounded()
     {
-        int layerMask = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Flatform"));
+        int layerMask = ((1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Platform")));
 
         // 이 모델은 position 위치가 바닥이라 약간 위에서 확인가능
         Vector3 tempPosition = new Vector3(m_transform.position.x, m_transform.position.y + jumpPosition, m_transform.position.z);
 
         //bool isHit = Physics.Raycast(m_transform.position, Vector3.down, 1.1f, layerMask);
+        bool isHit = Physics.Raycast(tempPosition, Vector3.down, groundPosition, layerMask);
+        return isHit;
+    }
+
+    bool IsPlatform()
+    {
+        int layerMask = (1 << LayerMask.NameToLayer("Platform"));
+
+        Vector3 tempPosition = new Vector3(m_transform.position.x, m_transform.position.y + jumpPosition, m_transform.position.z);
+
         bool isHit = Physics.Raycast(tempPosition, Vector3.down, groundPosition, layerMask);
         return isHit;
     }
@@ -453,9 +475,25 @@ public class PlayerControl : MonoBehaviour
             //    //Invoke("ChangeStandingState", 0.1f);
             //}
 
-            playerState = E_Player_State.RUNNING;
-            return;
+            if (IsPlatform() && isPlatform)
+            {
+                isPlatform = false;
+                Invoke("PlatformCollision", 1f);
+            }
+            else
+            {
+                playerState = E_Player_State.RUNNING;
+                return;
+            }
         }
+    }
+
+    void PlatformCollision()
+    {
+        Debug.Log("platform");        
+
+        playerState = E_Player_State.RUNNING;
+        return;
     }
 
     void ChangeStandingState()
