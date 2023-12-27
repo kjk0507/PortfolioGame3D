@@ -6,6 +6,7 @@ TagManager:
   tags:
   - DefenseStart
   - Enemy(Skeleton)
+  - FortressHitBox
   layers:
   - Default
   - TransparentFX

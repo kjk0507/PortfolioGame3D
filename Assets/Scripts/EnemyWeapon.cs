@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,7 +16,7 @@ public class EnemyWeapon : MonoBehaviour
     private void FixedUpdate()
     {
         Vector3 vPos = this.transform.position;
-        Vector3 vDir = -1 * transform.up;  // 뭔가 축이 좀 틀려진거 같으므로 다른데서 쓰려면 수정 필요
+        Vector3 vDir = -1 * transform.up;  // 뭔가 축이 좀 틀어진거 같으므로 다른데서 쓰려면 수정 필요
         Vector3 vEnd = vPos + vDir * m_fRange;
 
         Debug.DrawLine(vPos, vEnd, Color.green);
@@ -28,7 +28,14 @@ public class EnemyWeapon : MonoBehaviour
         {
             if (!isHit)
             {
-                raycastHit.collider.transform.parent.GetComponent<PlayerControl>().m_status.Demeged(1);
+                if(raycastHit.collider.transform.root.GetComponent<PlayerControl>() != null)
+                {
+                    raycastHit.collider.transform.root.GetComponent<PlayerControl>().m_status.Demeged(1);
+                } else if (raycastHit.collider.transform.root.GetComponent<FortressControl>() != null)
+                {
+                    raycastHit.collider.transform.root.GetComponent<FortressControl>().m_status.Demeged(1);
+                }
+
                 isHit = true;
 
                 Invoke("CheckHitTime", 1f);

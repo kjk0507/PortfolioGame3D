@@ -11,14 +11,15 @@ public class PlayerArrow : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        //Debug.Log("ishit?");
         if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyHitBox"))
         {
             Destroy(this.gameObject);
-            if (collision.transform.parent.GetComponent<EnemyControl>() != null)
+            if (collision.transform.root.GetComponent<EnemyControl>() != null)
             {
-                //Debug.Log("hit");
-                collision.transform.parent.GetComponent<EnemyControl>().m_status.Demeged(1);
+                collision.transform.root.GetComponent<EnemyControl>().m_status.Demeged(1);
+            } else if (collision.transform.root.GetComponent<EnemyControl_Wave>() != null)
+            {
+                collision.transform.root.GetComponent<EnemyControl_Wave>().m_status.Demeged(1);
             }
         }
 

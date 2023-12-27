@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class AutoTurretMovement : MonoBehaviour
 {
-    public string enemyTag = "Enemy"; // 태그를 적절한 값으로 변경하세요.
+    public string enemyTag = "EnemyHitBox"; 
     public float rotationSpeed = 5f;
     public Transform m_transform;
+    bool isShot = false;
+    public GameObject bullet;
+    public GameObject shotPosition;
 
     void Update()
     {
@@ -40,29 +43,46 @@ public class AutoTurretMovement : MonoBehaviour
 
     void RotateTowards(Vector3 targetPosition)
     {
-        //Debug.Log("x : " + targetPosition.x + "/ y : " + targetPosition.y + "/ z : " + targetPosition.z);
-
-        //float tempX = targetPosition.x;
-        //float tempY = targetPosition.y;
-        //float tempZ = targetPosition.z;
-
-        //targetPosition.x = tempZ;
-        //targetPosition.y = tempX;
-        //targetPosition.z = tempY;
-
-        //float tempX2 = m_transform.position.x;
-        //float tempY2 = m_transform.position.y;
-        //float tempZ2 = m_transform.position.z;
-
-
-
         Vector3 direction = targetPosition - m_transform.position;
-
-        //direction.y = 0;
-
-        // 타겟의 y 값 만큼 x가 움직, 타켓의 z 값만큼 y가 움직임, 타겟의 x 만큼 z가 움직임
-
         Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
+        float distance = Vector3.Distance(m_transform.position, targetPosition);
+        if (distance < 20)
+        {
+            ShotBullet();
+        }
     }
+
+    void ShotBullet()
+    {
+        if (!isShot)
+        {
+            Debug.Log("shot");
+            isShot = true;
+
+            for (int i = 0; i < 4; i++)
+            {
+                Invoke("FireBullet", i * 0.1f);
+            }
+
+            Invoke("ResetShotFlag", 3f);
+        }
+    }
+
+    void FireBullet()
+    {
+        Quaternion rotation = Quaternion.identity;
+        GameObject objArrow = Instantiate(bullet, shotPosition.transform.position, rotation);
+        //Vector3 direction = (shotPosition.transform.position - m_transform.position).normalized;
+        Vector3 direction = m_transform.forward.normalized;
+        objArrow.GetComponent<Rigidbody>().velocity = direction * 20f;
+    }
+
+    void ResetShotFlag()
+    {
+        isShot = false;
+    }
+
+
 }
