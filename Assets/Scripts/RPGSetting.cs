@@ -18,7 +18,7 @@ namespace RPGSetting
         public int maxMp;
         public int curMp;
         public int equipMp;
-        // 정령 관련
+        // 요새 관련
         public int maxFp;
         public int curFp;
         public int equipFp;
@@ -27,8 +27,11 @@ namespace RPGSetting
         public int equipAtk;
         // 인벤토리 정보
         public List<Item> inventory = new List<Item>();
+        public int money;
+        // 상태이상 관련
+        public bool isPain = true;  // 데미지 받는 여부
 
-        // HP, MP, 정령 수치 불러오기
+        // HP, MP, 요새 수치 불러오기
         public int GetFinalHp()
         {
             return maxHp + equipHp;
@@ -73,13 +76,17 @@ namespace RPGSetting
             this.curAtk = curAtk;
         }
 
+        // 체력 관련
         // 데미지 받는 경우
         public void Demeged(int demage)
         {
-            this.curHp -= demage;
-            if (this.curHp < 0)
+            if (isPain)
             {
-                this.curHp = 0;
+                this.curHp -= demage;
+                if (this.curHp < 0)
+                {
+                    this.curHp = 0;
+                }
             }
         }
 
@@ -101,104 +108,117 @@ namespace RPGSetting
             else
                 return true;
         }
-               
+
+        // 무적 상태 변환
+        public void ChangePainTrue()
+        {
+            this.isPain = true;
+        }
+
+        public void ChangePainFalse()
+        {
+            this.isPain = false;
+        }
+
+        // 돈 증감
+        public void GetMoney(int num)
+        {
+            this.money += num;
+        }
+
+        public void loseMoney(int num)
+        {
+            this.money -= num;
+        }
+
+        // 아이템 증감
+        public void GetItem(Item getItem, int num)
+        {
+            bool ishave = false;
+
+            foreach(Item item in this.inventory)
+            {
+                if(item.itemCode == getItem.itemCode)
+                {
+                    ishave = true;
+                    item.num++;
+                    break;
+                }
+            }
+
+            if (!ishave)
+            {
+                this.inventory.Add(getItem);
+            }
+        }  
     }
 
     public class FortressStatus
     {
-        public string name;
-        // HP 관련
-        public int maxHp;
-        public int curHp;
-        public int equipHp;
-        // MP 관련 -> 총알 수로 하는건 어떨까?
-        public int maxMp;
-        public int curMp;
-        public int equipMp;
-        // 정령 관련
-        public int maxFp;
-        public int curFp;
-        public int equipFp;
-        // 공격 관련
-        public int curAtk;
-        public int equipAtk;
-        // 인벤토리 정보
-        public List<Item> inventory = new List<Item>();
+        // 체력 보너스 관련
+        public int plusHP = 5;
 
-        // HP, MP, 정령 수치 불러오기
-        public int GetFinalHp()
-        {
-            return maxHp + equipHp;
-        }
+        // 속도 관련
+        public float rotationSpeed = 20f;
+        public float fireSpeed;
 
-        public int GetCurHp()
-        {
-            return curHp;
-        }
+        // 데미지 관련
+        public float demage;
 
-        public int GetFinalMp()
-        {
-            return maxMp + equipMp;
-        }
+        // 터렛 관련
+        public float turretSpeed;
+        public float tureetFireNum;
 
-        public int GetCurMp()
-        {
-            return curMp;
-        }
+        // 해금 정보
+        public bool activeTurret1 = false;
+        public bool activeTurret2 = false;
+        public bool activeTurret3 = false;
+        public bool activeTurret4 = false;
 
-        public int GetFinalFp()
-        {
-            return maxFp + equipFp;
-        }
+        // 클리어 여부
+        public bool clearStage1 = false;
+        public bool clearStage2 = false;
+        public bool clearStage3 = false;
+    }
 
-        public int GetCurFp()
-        {
-            return curFp;
-        }
+    public class SkillInfo
+    {
+        public bool activeSkill1 = false; // 실드
+        public bool activeSkill2 = false; // 회복
+        public bool activeSkill3 = false; // 포격
+    }
 
-        public int GetFinalAtk()
-        {
-            return curAtk + equipAtk;
-        }
+    public class Skill
+    {
+        public String type;
+        public String skillCode;
+        public String name;
+        public String icon;
+        public bool isHave;
+        public String explain;
+        public int money;
 
-        // 생성자
-        public FortressStatus(string name = "", int maxHp = 5, int curHp = 5, int curAtk = 1)
+        public Skill(string type, string skillCode, string name, string icon, bool isHave, string explain)
         {
+            this.type = type;
+            this.skillCode = skillCode;
             this.name = name;
-            this.maxHp = maxHp;
-            this.curHp = curHp;
-            this.curAtk = curAtk;
+            this.icon = icon;
+            this.isHave = isHave;
+            this.explain = explain;
         }
+    }
 
-        // 데미지 받는 경우
-        public void Demeged(int demage)
+    public class SkillManager
+    {
+        List<Skill> m_listSkillManager = new List<Skill>();
+        public void Init()
         {
-            this.curHp -= demage;
-            if (this.curHp < 0)
-            {
-                this.curHp = 0;
-            }
+            m_listSkillManager.Add(new Skill("Active", "SA_01", "실드", "barrier", false, "베리어 입니다."));
+            m_listSkillManager.Add(new Skill("Active", "SA_02", "회복", "repair", false, "회복입니다.")); 
+            m_listSkillManager.Add(new Skill("Active", "SA_03", "포격", "bomb", false, "저장해둔 포탄을 발사합니다."));
+            m_listSkillManager.Add(new Skill("Active", "SA_04", "상점포격", "bomb2", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다."));
         }
-
-        // 회복하는 경우
-        public void Healing(int healing)
-        {
-            int finalHp = GetFinalHp();
-            this.curHp += healing;
-            if (finalHp < curHp)
-            {
-                this.curHp = finalHp;
-            }
-        }
-
-        public bool IsDeath()
-        {
-            if (this.curHp > 0)
-                return false;
-            else
-                return true;
-        }
-
     }
 
     [Serializable]
@@ -232,10 +252,10 @@ namespace RPGSetting
 
         public void Init()
         {
-            m_listItemManager.Add(new Item("A", "A01", "test1", "axe", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "A02", "test2", "bag", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "A03", "test3", "boots", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "A04", "test4", "cloaks", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "IA01", "test1", "axe", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "IA02", "test2", "bag", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "IA03", "test3", "boots", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("A", "IA04", "test4", "cloaks", 1, "test1", 10)); //0
         }
 
         public void SetPlayerAllData(Status player)

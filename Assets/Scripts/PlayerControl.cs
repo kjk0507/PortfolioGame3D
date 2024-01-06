@@ -10,8 +10,8 @@ public class PlayerControl : MonoBehaviour
     Rigidbody m_rigidbody;
     Animator m_animator;
 
-    // 스테이터스
-    public Status m_status = new Status();
+    // 스테이터스 -> 게임매니저에서 관리
+    //public Status m_status = new Status();
 
     // 변환 변수
     public float m_moveSpeed = 5f;   // 이동속도

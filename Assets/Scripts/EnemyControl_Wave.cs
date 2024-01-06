@@ -11,25 +11,30 @@ public class EnemyControl_Wave : MonoBehaviour
     Rigidbody m_rigidbody;
     Animator m_animator;
 
+    public GameObject m_enemyHitBox;
+
     public Status m_status = new Status();
 
-    GameObject nearestFortress;
+    public GameObject nearestFortress;
 
     bool isAttack = false;
+    bool isDeath = false;
 
     public E_Enemy_Type e_enemyType;
     public E_AI_STATUS e_status = E_AI_STATUS.STANDING;
 
     public enum E_Enemy_Type
     {
-        Skeleton
+        Skeleton,
+        Dragon
     }
     public enum E_AI_STATUS
     {
         STANDING,  // 기본 동작(바로 달려감)
         MOVE,      // 요새방향으로 달리기
         ATTACK,    // 요새공격
-        SKILL      // 스킬 발동
+        SKILL,     // 스킬 발동
+        DEATH      // 죽는 모션
     }
 
     void Start()
@@ -37,7 +42,7 @@ public class EnemyControl_Wave : MonoBehaviour
         m_transform = GetComponent<Transform>();
         m_rigidbody = GetComponent<Rigidbody>();
         m_animator = GetComponent<Animator>();
-        nearestFortress = FindNearestFortress();
+        //nearestFortress = FindNearestFortress();  // 이거 가까운거보다 변수로 빼두고 부여하는 방식은 어떨까? 복사될때 부여가 가능할까?
         LookFortress(nearestFortress);
     }
 
@@ -46,7 +51,7 @@ public class EnemyControl_Wave : MonoBehaviour
     {
         if (m_status.IsDeath())
         {
-            Destroy(this.gameObject);
+            e_status = E_AI_STATUS.DEATH;
         }
 
         m_animator.SetInteger("e_status", (int)e_status);
@@ -68,6 +73,9 @@ public class EnemyControl_Wave : MonoBehaviour
             case E_AI_STATUS.SKILL:
                 ProcessSkill(e_enemyType);
                 break;
+            case E_AI_STATUS.DEATH:
+                ProcessDeath(e_enemyType);
+                break;
         }
     }
 
@@ -76,7 +84,14 @@ public class EnemyControl_Wave : MonoBehaviour
         if (e_enemyType == E_Enemy_Type.Skeleton)
         {
             float distance = Vector3.Distance(m_transform.position, nearestFortress.transform.position);
-            e_status = (distance > 3) ? E_AI_STATUS.MOVE : E_AI_STATUS.ATTACK;
+            //e_status = (distance > 3) ? E_AI_STATUS.MOVE : E_AI_STATUS.ATTACK;
+            e_status = E_AI_STATUS.MOVE;
+        }
+
+        if(e_enemyType == E_Enemy_Type.Dragon)
+        {
+            float distance = Vector3.Distance(m_transform.position, nearestFortress.transform.position);
+            e_status = E_AI_STATUS.MOVE;
         }
     }
 
@@ -90,7 +105,24 @@ public class EnemyControl_Wave : MonoBehaviour
             direction.Normalize();
             float distance = Vector3.Distance(m_transform.position, nearestFortress.transform.position);
 
-            if (distance > 3)
+            if (distance > 4)
+            {
+                m_rigidbody.velocity = new Vector3(direction.x * 5f, m_rigidbody.velocity.y, 0);
+            }
+            else
+            {
+                isAttack = true;
+                e_status = E_AI_STATUS.ATTACK;
+            }
+        }
+
+        if (e_enemyType == E_Enemy_Type.Dragon)
+        {
+            Vector3 direction = new Vector3(m_transform.localScale.z, 0, 0);
+            direction.Normalize();
+            float distance = Vector3.Distance(m_transform.position, nearestFortress.transform.position);
+
+            if (distance > 10)
             {
                 m_rigidbody.velocity = new Vector3(direction.x * 5f, m_rigidbody.velocity.y, 0);
             }
@@ -104,7 +136,17 @@ public class EnemyControl_Wave : MonoBehaviour
 
     void ProcessAttack(E_Enemy_Type e_enemyType)
     {
-        if (e_enemyType == E_Enemy_Type.Skeleton)
+        if (e_enemyType == E_Enemy_Type.Skeleton )
+        {
+            if (isAttack)
+            {
+                isAttack = false;
+                m_rigidbody.velocity = Vector3.zero;
+                Invoke("ChangeStatus", 3f);
+            }
+        }
+
+        if (e_enemyType == E_Enemy_Type.Dragon)
         {
             if (isAttack)
             {
@@ -123,6 +165,28 @@ public class EnemyControl_Wave : MonoBehaviour
         }
     }
 
+    void ProcessDeath(E_Enemy_Type e_enemyType)
+    {
+        if (e_enemyType == E_Enemy_Type.Skeleton && !isDeath)
+        {
+            StartCoroutine(EnemyDeath());
+        }
+
+        if (e_enemyType == E_Enemy_Type.Dragon && !isDeath)
+        {
+            StartCoroutine(EnemyDeath());
+        }
+    }    
+
+    IEnumerator EnemyDeath()
+    {
+        m_rigidbody.isKinematic = true;
+        m_enemyHitBox.SetActive(false);
+
+        yield return new WaitForSeconds(5f);
+        Destroy(this.gameObject);
+    }
+
     void ChangeStatus()
     {
         e_status = E_AI_STATUS.STANDING;
@@ -134,6 +198,14 @@ public class EnemyControl_Wave : MonoBehaviour
         float scale;
 
         if (e_enemyType == E_Enemy_Type.Skeleton)
+        {
+            direction = (nearestFortress.GetComponent<Transform>().position.x < transform.position.x ? -1 : 1);
+            scale = transform.localScale.y;
+            transform.localScale = new Vector3(scale, scale, direction * scale);
+            transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+        }
+
+        if (e_enemyType == E_Enemy_Type.Dragon)
         {
             direction = (nearestFortress.GetComponent<Transform>().position.x < transform.position.x ? -1 : 1);
             scale = transform.localScale.y;

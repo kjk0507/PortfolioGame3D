@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerArrow : MonoBehaviour
 {
+    bool hasTriggered = false;
+
     private void Start()
     {
         Invoke("DelayDestroy", 5f);
@@ -11,22 +13,27 @@ public class PlayerArrow : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyHitBox"))
+        if(!hasTriggered)
         {
-            Destroy(this.gameObject);
-            if (collision.transform.root.GetComponent<EnemyControl>() != null)
+            if (collision.gameObject.layer == LayerMask.NameToLayer("EnemyHitBox"))
             {
-                collision.transform.root.GetComponent<EnemyControl>().m_status.Demeged(1);
-            } else if (collision.transform.root.GetComponent<EnemyControl_Wave>() != null)
-            {
-                collision.transform.root.GetComponent<EnemyControl_Wave>().m_status.Demeged(1);
+                hasTriggered = true;
+                Destroy(this.gameObject);
+                if (collision.transform.root.GetComponent<EnemyControl>() != null)
+                {
+                    collision.transform.root.GetComponent<EnemyControl>().m_status.Demeged(1);
+                } else if (collision.transform.root.GetComponent<EnemyControl_Wave>() != null)
+                {
+                    collision.transform.root.GetComponent<EnemyControl_Wave>().m_status.Demeged(1);
+                }
             }
-        }
 
-        if(collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            Invoke("DelayDestroy", 1f);
+            if(collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                hasTriggered = true;
+                this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                Invoke("DelayDestroy", 1f);
+            }
         }
     }
 

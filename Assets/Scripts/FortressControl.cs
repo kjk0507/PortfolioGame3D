@@ -5,10 +5,13 @@ using RPGSetting;
 
 public class FortressControl : MonoBehaviour
 {
+    public GameObject m_fortress;
     public GameObject m_body;
     public GameObject m_startzone;
     //public GameObject virtualCamera;
     public GameObject m_spawnZone;
+    public GameObject m_hitBox;
+    public GameObject m_defaultFortress;
     public int m_maxEnemy;
     public int m_curEnemy;
 
@@ -18,13 +21,17 @@ public class FortressControl : MonoBehaviour
 
     bool isWaving = false;
 
+    public List<GameObject> m_enemyType = new List<GameObject>();
+    public List<GameObject> m_enemyList = new List<GameObject>();
     public GameObject m_enemy;
 
+    public GameObject shieldPrefab;
+    private GameObject currentShield;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        //m_fortress = GetComponent<GameObject>();
     }
 
     // Update is called once per frame
@@ -32,16 +39,33 @@ public class FortressControl : MonoBehaviour
     {
         if(m_player != null && Input.GetKeyDown(KeyCode.A) && !isWaving)
         {
+            m_enemyList = new List<GameObject>();
+
             m_body.SetActive(true);
             m_spawnZone.SetActive(true);
 
             m_startzone.SetActive(false);
             m_player.SetActive(false);
 
+            m_curEnemy = m_maxEnemy;
+
             GameManager.m_cInstance.isPlayWave = true;
+            GameManager.m_cInstance.activeFortress = m_fortress;
+
             isWaving = true;
 
             StartCoroutine(SpawnEnemy(m_maxEnemy));
+        }
+
+        CheckEnemyNum();
+
+        if (isWaving)
+        {
+            // 방어막 구현
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                GenerateShield();
+            }
         }
     }
 
@@ -56,7 +80,21 @@ public class FortressControl : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
 
             // 생성 위치 부분에 위에서 만든 함수 Return_RandomPosition() 함수 대입
-            GameObject instantCapsul = Instantiate(m_enemy, Return_RandomPosition(), Quaternion.identity);
+            // 이거 복사시 게임 오브젝트에 데이터 입력이 가능할까? -> 입력하고 소환한다면? -> 되네
+            int randomNum = Random.Range(0,11);
+            if(randomNum > 8)
+            {
+                m_enemy = m_enemyType[1];
+            }
+            else
+            {
+                m_enemy = m_enemyType[0];
+                m_enemy.GetComponentInChildren<EnemyWeapon>().m_tag = "FortressHitBox";
+            }
+
+            m_enemy.GetComponent<EnemyControl_Wave>().nearestFortress = m_hitBox;
+            GameObject instantEnemy = Instantiate(m_enemy, Return_RandomPosition(), Quaternion.identity);
+            m_enemyList.Add(instantEnemy);
         }
     }
 
@@ -73,6 +111,68 @@ public class FortressControl : MonoBehaviour
 
         Vector3 respawnPosition = originPosition + RandomPostion;
         return respawnPosition;
+    }
+
+    public void ChangeFortressStatus()
+    {
+        m_body.SetActive(false);
+        m_spawnZone.SetActive(false);
+
+        m_startzone.SetActive(true);
+        m_player.SetActive(true);
+
+        isWaving = false;
+
+        if(m_enemyList.Count > 0)
+        {
+            foreach(GameObject enemy in m_enemyList)
+            {
+                Destroy(enemy);
+            }
+        }
+    }
+
+    public void CheckEnemyNum()
+    {
+        if (isWaving)
+        {
+            int count = 0;
+
+            foreach (GameObject enemy in m_enemyList)
+            {
+                if (enemy != null)
+                {
+                    count++;
+                }
+            }
+
+            m_curEnemy = count;
+        }
+    }
+    void GenerateShield()
+    {
+        // 이미 생성된 방어막이 있다면 제거
+        if (currentShield != null)
+        {
+            Destroy(currentShield);
+        }
+
+        Vector3 shieldPosition = new Vector3(m_defaultFortress.transform.position.x, m_defaultFortress.transform.position.y + 1.5f, m_defaultFortress.transform.position.z);
+        shieldPrefab.transform.localScale = new Vector3(10,10,10);
+
+        // 방어막 생성 및 위치 설정
+        currentShield = Instantiate(shieldPrefab, shieldPosition, Quaternion.identity);
+
+        StartCoroutine(DestroyShield(currentShield, 5f));
+    }
+    IEnumerator DestroyShield(GameObject currentShield, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (currentShield != null)
+        {
+            Destroy(currentShield);
+        }
     }
 
     private void OnTriggerEnter(Collider collision)

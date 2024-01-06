@@ -7,10 +7,8 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class EnemyWeapon : MonoBehaviour
 {
-    [SerializeField]
-    LayerMask m_sHitLayer;
-    [SerializeField]
-    float m_fRange = 1;
+    public string m_tag = "PlayerHitBox";
+    float m_fRange = 2;
     bool isHit = false;
 
     private void FixedUpdate()
@@ -22,19 +20,25 @@ public class EnemyWeapon : MonoBehaviour
         Debug.DrawLine(vPos, vEnd, Color.green);
 
         RaycastHit raycastHit;
-        bool isCheck = Physics.Raycast(vPos, vDir, out raycastHit, m_fRange, m_sHitLayer);
+        //bool isCheck = Physics.Raycast(vPos, vDir, out raycastHit, m_fRange, m_sHitLayer);
+        bool isCheck = Physics.Raycast(vPos, vDir, out raycastHit, m_fRange) && raycastHit.collider.CompareTag(m_tag);
+
+
 
         if (isCheck)
         {
             if (!isHit)
             {
-                if(raycastHit.collider.transform.root.GetComponent<PlayerControl>() != null)
-                {
-                    raycastHit.collider.transform.root.GetComponent<PlayerControl>().m_status.Demeged(1);
-                } else if (raycastHit.collider.transform.root.GetComponent<FortressControl>() != null)
-                {
-                    raycastHit.collider.transform.root.GetComponent<FortressControl>().m_status.Demeged(1);
-                }
+                //if(raycastHit.collider.transform.root.GetComponent<PlayerControl>() != null)
+                //{
+                //    raycastHit.collider.transform.root.GetComponent<PlayerControl>().m_status.Demeged(1);
+                //} else if (raycastHit.collider.transform.root.GetComponent<FortressControl>() != null)
+                //{
+                //    raycastHit.collider.transform.root.GetComponent<FortressControl>().m_status.Demeged(1);
+                //}
+
+
+                GameManager.m_cInstance.playerStatus.Demeged(1);
 
                 isHit = true;
 
