@@ -29,6 +29,8 @@ public class PlayerControl : MonoBehaviour
     public GameObject shieldPrefab;
     private GameObject currentShield;
 
+    public int jumpCount;
+
     // 클래스 변수
     float inputHorizontal;
 
@@ -54,6 +56,8 @@ public class PlayerControl : MonoBehaviour
     enum E_Player_State { STANDING, RUNNING, STANDINGSHOT, RUNNINGSHOT, JUMP, DOUBLEJUMP, DAMAGE };
     E_Player_State playerState;
 
+    // 스킬 확인
+    SkillManager m_skillManager = new SkillManager();
 
     void Start()
     {
@@ -83,13 +87,18 @@ public class PlayerControl : MonoBehaviour
             }
 
             // 점프 구현
-            if (Input.GetKeyDown(KeyCode.Space) && !inputJump)
+            if (Input.GetKeyDown(KeyCode.Space) && !inputJump && jumpCount < 2)
             {
                 inputJump = true;
             }
 
             // (임시)더블 점프 구현
-            if (Input.GetKeyDown(KeyCode.Q))
+            //if (Input.GetKeyDown(KeyCode.Q))
+            //{
+            //    IsDoubleJump = true;
+            //}
+            
+            if(m_skillManager.FindSkillTrue(GameManager.m_cInstance.playerStatus, "SP_01"))
             {
                 IsDoubleJump = true;
             }
@@ -323,6 +332,7 @@ public class PlayerControl : MonoBehaviour
         // 점프 한번만
         if(inputJump && IsGrounded() && isJump)
         {
+            jumpCount++;
             m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x, 0);
             m_rigidbody.AddForce(Vector3.up * m_jumpPower, ForceMode.Impulse);
             //isJump = false;
@@ -362,6 +372,8 @@ public class PlayerControl : MonoBehaviour
 
         if(inputJump)
         {
+            Debug.Log("here" + jumpCount);
+            jumpCount++;
             m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x, 0);
             m_rigidbody.AddForce(Vector3.up * m_jumpPower, ForceMode.Impulse);
             IsDoubleJump = false;
@@ -461,6 +473,7 @@ public class PlayerControl : MonoBehaviour
         {
             m_animator.SetBool("isGround", true);
             isJump = false;
+            jumpCount = 0;
             //m_rigidbody.velocity = new Vector3(0, m_rigidbody.transform.position.y, 0);
 
             //if (inputHorizontal != 0)

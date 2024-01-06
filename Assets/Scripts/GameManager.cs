@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public List<GameObject> m_listGUIScenes; // GUI 리스트
     public GameObject m_inventory;  // 인벤토리 GUI
     public GUIInventory m_guiInventory;  // 인벤토리 하위 레이어
+    public GUISkill m_guiSkillList;
 
     public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND, PLAY_WAVE }  // GUI 상태
     public E_GUI_STATE m_curGUIState;
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
 
     // 상태창, 인벤토리, 스킬
     [SerializeField] ItemManager m_cItemManager = new ItemManager();  // 모든 아이템 리스트가 포함
+    [SerializeField] SkillManager m_skillManager = new SkillManager();  // 모든 스킬 리스트
     public Status playerStatus = new Status();
     public SkillInfo playerSkill = new SkillInfo();
     public FortressStatus playerFortessStatus = new FortressStatus();
@@ -44,6 +46,8 @@ public class GameManager : MonoBehaviour
         m_cInstance = this;
         m_cItemManager.Init();
         m_cItemManager.SetPlayerAllData(playerStatus);
+        m_skillManager.Init();
+        m_skillManager.SetPlayerAllData(playerStatus);
         playerStatus.name = "Player";
     }
 
@@ -206,7 +210,8 @@ public class GameManager : MonoBehaviour
         if (m_inventory.activeSelf == false)
         {
             m_guiInventory.SetIventory(playerStatus);
-            foreach(GameObject popup in popupGUIList)
+            m_guiSkillList.SetSkill(playerStatus);
+            foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
             }
@@ -220,6 +225,7 @@ public class GameManager : MonoBehaviour
                 popup.SetActive(false);
             }
             m_guiInventory.ResetIventoryButton();
+            m_guiSkillList.ResetSkillList();
         }
     }
 
@@ -247,6 +253,8 @@ public class GameManager : MonoBehaviour
     {
         if (popupGUIList[(int)E_GUI_POPUP.SKILL].activeSelf == false)
         {
+            m_guiInventory.SetIventory(playerStatus);
+            m_guiSkillList.SetSkill(playerStatus);
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
@@ -259,6 +267,8 @@ public class GameManager : MonoBehaviour
             {
                 popup.SetActive(false);
             }
+            m_guiInventory.ResetIventoryButton();
+            m_guiSkillList.ResetSkillList();
         }
     }
 

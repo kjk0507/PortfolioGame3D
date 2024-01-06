@@ -25,8 +25,11 @@ namespace RPGSetting
         // 공격 관련
         public int curAtk;
         public int equipAtk;
-        // 인벤토리 정보
+        // 인벤토리 관련
         public List<Item> inventory = new List<Item>();
+        // 스킬 관련
+        public List<Skill> skillList = new List<Skill>();
+        // 소지금 관련
         public int money;
         // 상태이상 관련
         public bool isPain = true;  // 데미지 받는 여부
@@ -188,24 +191,36 @@ namespace RPGSetting
         public bool activeSkill3 = false; // 포격
     }
 
+    [Serializable]
     public class Skill
     {
         public String type;
+        public String modeType;
         public String skillCode;
         public String name;
         public String icon;
         public bool isHave;
         public String explain;
         public int money;
+        public String dropLocation;
+        public float coolDown;
+        public String pressKey;
+        public String Require;
 
-        public Skill(string type, string skillCode, string name, string icon, bool isHave, string explain)
+        public Skill(string type, string modeType, string skillCode, string name, string icon, bool isHave, string explain, int money, string dropLocation, float coolDown, string pressKey, string Require)
         {
             this.type = type;
+            this.modeType = modeType;
             this.skillCode = skillCode;
             this.name = name;
             this.icon = icon;
             this.isHave = isHave;
             this.explain = explain;
+            this.money = money;
+            this.dropLocation = dropLocation;
+            this.coolDown = coolDown;
+            this.pressKey = pressKey;
+            this.Require = Require;
         }
     }
 
@@ -214,10 +229,59 @@ namespace RPGSetting
         List<Skill> m_listSkillManager = new List<Skill>();
         public void Init()
         {
-            m_listSkillManager.Add(new Skill("Active", "SA_01", "실드", "barrier", false, "베리어 입니다."));
-            m_listSkillManager.Add(new Skill("Active", "SA_02", "회복", "repair", false, "회복입니다.")); 
-            m_listSkillManager.Add(new Skill("Active", "SA_03", "포격", "bomb", false, "저장해둔 포탄을 발사합니다."));
-            m_listSkillManager.Add(new Skill("Active", "SA_04", "상점포격", "bomb2", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다."));
+            m_listSkillManager.Add(new Skill("Active", "both" , "SA_01", "실드", "barrier", false, "베리어 입니다.", 1000, "A", 5f, "B", "보석 1"));
+            m_listSkillManager.Add(new Skill("Active", "both", "SA_02", "회복", "repair", false, "회복입니다.", 2000, "A", 5f, "C", "보석 1")); 
+            m_listSkillManager.Add(new Skill("Active", "fortress","SA_03", "포격", "bomb", false, "저장해둔 포탄을 발사합니다.", 1000, "A", 5f, "X", "보석 2"));
+            m_listSkillManager.Add(new Skill("Active", "fortress", "SA_04", "상점포격", "bomb2", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다.", 1000, "A", 5f, "D", "보석 1"));
+            m_listSkillManager.Add(new Skill("Pasive", "player", "SP_01", "이단점프", "DubbleJump", true, "이단 점프가 가능합니다.", 1000, "A", 0f, "없음", "보석 1"));
+        }
+
+        public void SetPlayerAllData(Status player)
+        {
+            player.skillList = m_listSkillManager;
+        }
+
+        public Skill FindSkill(Status player, string skillCode)
+        {
+            Skill findSkill = null;
+
+            foreach(Skill skill in player.skillList)
+            {
+                if(skill.skillCode == skillCode)
+                {
+                    findSkill = skill;
+                    break;
+                }
+            }
+
+            return findSkill;
+        }
+
+        public bool FindSkillTrue(Status player, string skillCode)
+        {
+            Skill findSkill = null;
+
+            foreach (Skill skill in player.skillList)
+            {
+                if (skill.skillCode == skillCode)
+                {
+                    findSkill = skill;
+                    break;
+                }
+            }
+
+            if(findSkill == null)
+            {
+                return false;
+            }
+            else
+            {
+                if(findSkill.isHave){
+                    return true;
+                }                
+            }
+
+            return false ;
         }
     }
 
