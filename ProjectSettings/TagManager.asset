@@ -9,6 +9,7 @@ TagManager:
   - FortressHitBox
   - PlayerHitBox
   - Shield
+  - Enemy(wave)
   layers:
   - Default
   - TransparentFX

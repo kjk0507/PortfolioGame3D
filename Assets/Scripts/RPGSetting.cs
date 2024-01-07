@@ -288,23 +288,25 @@ namespace RPGSetting
     [Serializable]
     public class Item
     {
-        public String type; // 소모품, 장비품, 기타
+        public String type; // 소모품, 장비품, 기타 consum, equip, etc
         public String itemCode;
         public String name;
         public String icon;
         public int num; // 수량
+        public String dropLocation;
         public String explain;
         public int money;
         public int plusAttack;
         public int plusDefence;
 
-        public Item(string type, string itemCode, string name, string icon, int num, string explain, int money)
+        public Item(string type, string itemCode, string name, string icon, int num, string dropLocation , string explain, int money)
         {
             this.type = type;
             this.itemCode = itemCode;
             this.name = name;
             this.icon = icon;
             this.num = num;
+            this.dropLocation = dropLocation;
             this.explain = explain;
             this.money = money;
         }
@@ -312,14 +314,20 @@ namespace RPGSetting
 
     public class ItemManager
     {
-        List<Item> m_listItemManager = new List<Item>();
+        public List<Item> m_listItemManager = new List<Item>();
+        public List<Item> m_allItemList = new List<Item>();
 
         public void Init()
         {
-            m_listItemManager.Add(new Item("A", "IA01", "test1", "axe", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "IA02", "test2", "bag", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "IA03", "test3", "boots", 1, "test1", 10)); //0
-            m_listItemManager.Add(new Item("A", "IA04", "test4", "cloaks", 1, "test1", 10)); //0
+            m_listItemManager.Add(new Item("etc", "IE_01", "test1", "axe", 1, "A","test1", 10)); //0
+            m_listItemManager.Add(new Item("etc", "IE_02", "test2", "bag", 1, "A", "test1", 10)); //0
+            m_listItemManager.Add(new Item("etc", "IE_03", "test3", "boots", 1, "A", "test1", 10)); //0
+            m_listItemManager.Add(new Item("etc", "IE_04", "test4", "cloaks", 1, "A", "test1", 10)); //0
+
+            m_allItemList.Add(new Item("etc", "IE_01", "test1", "axe", 1, "A", "test1", 10)); //0
+            m_allItemList.Add(new Item("etc", "IE_02", "test2", "bag", 1, "A", "test1", 10)); //0
+            m_allItemList.Add(new Item("etc", "IE_03", "test3", "boots", 1, "A", "test1", 10)); //0
+            m_allItemList.Add(new Item("etc", "IE_04", "test4", "cloaks", 1, "A", "test1", 10)); //0
         }
 
         public void SetPlayerAllData(Status player)

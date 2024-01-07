@@ -8,6 +8,8 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public static GameManager m_cInstance;
+    public GameObject m_comment;
+    public Coroutine fadeOutCoroutine;
 
     public List<GameObject> m_hpList; // hp 스테이터스 리스트
     public List<GameObject> m_hpList2; // 요세 HP 스테이터스 리스트
@@ -15,8 +17,12 @@ public class GameManager : MonoBehaviour
     public GameObject m_inventory;  // 인벤토리 GUI
     public GUIInventory m_guiInventory;  // 인벤토리 하위 레이어
     public GUISkill m_guiSkillList;
+    public GameObject m_store; // store 상위 GUI
+    public GUIStoreBuy m_guiStoreBuy;
+    public GUIItemSell m_guiItemSell;
 
-    public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND, PLAY_WAVE }  // GUI 상태
+
+    public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND, PLAY_WAVE, STORE }  // GUI 상태
     public E_GUI_STATE m_curGUIState;
     bool isDeath = false;
 
@@ -37,9 +43,13 @@ public class GameManager : MonoBehaviour
     public SkillInfo playerSkill = new SkillInfo();
     public FortressStatus playerFortessStatus = new FortressStatus();
 
+
     public List<GameObject> popupGUIList = new List<GameObject>();
     public enum E_GUI_POPUP { STATUS, INVENTORY, SKILL}
     public GUIStatus m_guiStatus;
+
+    public List<GameObject> StoreGUIList = new List<GameObject>();
+    public enum E_GUI_STORE { BUY, SELL}
 
     private void Awake()
     {
@@ -49,6 +59,7 @@ public class GameManager : MonoBehaviour
         m_skillManager.Init();
         m_skillManager.SetPlayerAllData(playerStatus);
         playerStatus.name = "Player";
+        playerStatus.money = 10000;
     }
 
     void Start()
@@ -135,7 +146,45 @@ public class GameManager : MonoBehaviour
                     PopupSkill();
                 }
                 break;
+            case E_GUI_STATE.STORE:
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    LeaveStore();
+                }
+                break;
         }
+    }
+
+    public void VisitStore()
+    {
+        // 다른 스테이터스로 변경하여 아예 다른 버튼 안눌리게 변경
+        m_curGUIState = E_GUI_STATE.STORE;
+        m_store.SetActive(true);
+        foreach(GameObject store in StoreGUIList)
+        {
+            store.SetActive(false);
+        }
+        StoreGUIList[(int)E_GUI_STORE.BUY].SetActive(true);
+        RestoreStore();
+    }
+
+    public void LeaveStore()
+    {
+        m_curGUIState = E_GUI_STATE.PLAY;
+        m_store.SetActive(false);
+    }
+
+    public void RestoreStore()
+    {
+        m_guiStoreBuy.ResetStoreButton(); // 구매 버튼 초기화
+        m_guiStoreBuy.ResetStoreInfo();   // 구매 정보 초기화
+        m_guiStoreBuy.SetSkillStore(playerStatus); // 스킬 판매 버튼생성
+        m_guiStoreBuy.SetItemStore(m_cItemManager); // 아이템 판매 버튼생성
+        //Debug.Log("전체 : " + m_cItemManager.m_allItemList.Count);   //  이거 왜 주소를 공유함?
+        //Debug.Log("플레이어 : " + playerStatus.inventory.Count);
+        m_guiItemSell.ResetItemList();
+        m_guiItemSell.SetItem(playerStatus);
+
     }
 
     public void EventWaveStart()
@@ -328,5 +377,36 @@ public class GameManager : MonoBehaviour
         {
             playerStatus.ChangePainTrue();
         }
+    }
+
+    public void SetComment(string comment)
+    {
+        m_comment.gameObject.SetActive(true);
+        TextMeshProUGUI textMeshPro = m_comment.GetComponentInChildren<TextMeshProUGUI>();
+        textMeshPro.text = comment;
+
+        if (fadeOutCoroutine != null)
+        {
+            textMeshPro.color = new Color(textMeshPro.color.r, textMeshPro.color.g, textMeshPro.color.b, 1f);
+            StopCoroutine(fadeOutCoroutine);
+        }
+
+        fadeOutCoroutine = StartCoroutine(FadeOutText(textMeshPro));
+    }
+
+    private IEnumerator FadeOutText(TextMeshProUGUI textMeshPro)
+    {
+        float fadeOutTime = 1f;
+
+        float startAlpha = textMeshPro.color.a;
+
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / fadeOutTime)
+        {
+            Color newColor = textMeshPro.color;
+            newColor.a = Mathf.Lerp(startAlpha, 0.0f, t);
+            textMeshPro.color = newColor;
+            yield return null;
+        }
+        m_comment.gameObject.SetActive(false);
     }
 }

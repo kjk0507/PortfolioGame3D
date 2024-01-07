@@ -39,6 +39,7 @@ public class PlayerControl : MonoBehaviour
     //bool isDash = false;  // 대시 가능 여부
     bool IsDoubleJump = false;  // 이단 점프 가능 여부
     bool isDamage = false;
+    public bool isStop = false;
     bool isJump = false;
     bool isShot = false;
     public bool isPlatform = false; // 이건 플랫폼에서 변경
@@ -53,8 +54,8 @@ public class PlayerControl : MonoBehaviour
     private float runningAttackCooldown = 2f;
 
     // 플레이어 유한상태머신
-    enum E_Player_State { STANDING, RUNNING, STANDINGSHOT, RUNNINGSHOT, JUMP, DOUBLEJUMP, DAMAGE };
-    E_Player_State playerState;
+    public enum E_Player_State { STANDING, RUNNING, STANDINGSHOT, RUNNINGSHOT, JUMP, DOUBLEJUMP, DAMAGE };
+    public E_Player_State playerState;
 
     // 스킬 확인
     SkillManager m_skillManager = new SkillManager();
@@ -69,7 +70,7 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         // 피격 시 모든 움직임 정지
-        if(!isDamage)
+        if(!isDamage || !isStop)
         {
             // 좌우 이동 구현
             if (isMove)
@@ -372,7 +373,6 @@ public class PlayerControl : MonoBehaviour
 
         if(inputJump)
         {
-            Debug.Log("here" + jumpCount);
             jumpCount++;
             m_rigidbody.velocity = new Vector2(m_rigidbody.velocity.x, 0);
             m_rigidbody.AddForce(Vector3.up * m_jumpPower, ForceMode.Impulse);

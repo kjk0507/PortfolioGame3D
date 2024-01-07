@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fortress_Rotation : MonoBehaviour
+public class FortressRotation : MonoBehaviour
 {
     public float rotationSpeed = 20.0f;
     public float maxRotationAngle = 90f; // 최대 회전 각도

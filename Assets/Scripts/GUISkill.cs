@@ -4,23 +4,34 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using RPGSetting;
 
 public class GUISkill : MonoBehaviour
 {
     [SerializeField] List<TextMeshProUGUI> skillInfoList = new List<TextMeshProUGUI>();
     public Image icon;
-    public enum E_SKILL_INFO { NAME, TYPE, DROP, EXPLAIN, COOLDOWN, Require, ICON }
+    public Button m_buyButton;
+    public enum E_SKILL_INFO { NAME, TYPE, DROP, EXPLAIN, COOLDOWN, Require, ICON, BUTTON}
 
     public void SettingSkill(Skill skill)
     {
         skillInfoList[(int)E_SKILL_INFO.NAME].text = skill.name;
         skillInfoList[(int)E_SKILL_INFO.TYPE].text = "분류 : " + (skill.type == "Active" ? "액티브" : "패시브") + (skill.modeType == "both" ? "(요새 겸용)" : "");
-        skillInfoList[(int)E_SKILL_INFO.DROP].text = "체력 : " + skill.dropLocation;
-        skillInfoList[(int)E_SKILL_INFO.EXPLAIN].text = "요세 추가 체력 : " + skill.explain;
+        skillInfoList[(int)E_SKILL_INFO.DROP].text = "획득처 : " + skill.dropLocation;
+        skillInfoList[(int)E_SKILL_INFO.EXPLAIN].text = "설명 : " + skill.explain;
         skillInfoList[(int)E_SKILL_INFO.COOLDOWN].text = "쿨타임 : " + skill.coolDown;
-        skillInfoList[(int)E_SKILL_INFO.Require].text = "제작조건 : " + skill.Require;
+        skillInfoList[(int)E_SKILL_INFO.Require].text = "제작조건 : " + skill.Require + " + " + skill.money + " 골드";
         //icon.sprite = Resources.Load<Sprite>("Images/RPG_inventory_icons/" + skill.icon);
+        if(m_buyButton != null)
+        {
+            if (skill.isHave)
+            {
+                m_buyButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                m_buyButton.onClick.AddListener(() => { TrytoBuySkill(skill); });
+            }
+        }
     }
 
     [SerializeField] GridLayoutGroup m_gridContent;
@@ -55,5 +66,35 @@ public class GUISkill : MonoBehaviour
             Destroy(skill.gameObject);
         }
         m_guiSkillList.Clear();
+    }
+
+    // 스킬 구매
+    public void TrytoBuySkill(Skill skill)
+    {
+        if(skill.money < GameManager.m_cInstance.playerStatus.money)
+        {
+            ChangeIsHave(skill);
+            m_buyButton.gameObject.SetActive(false);
+            GameManager.m_cInstance.playerStatus.money -= skill.money;
+            GameManager.m_cInstance.SetComment("구매했습니다.");
+        }
+        else
+        {
+            GameManager.m_cInstance.SetComment("돈이 부족합니다.");
+        }
+
+    }
+
+    public void ChangeIsHave(Skill skill)
+    {
+        for(int i = 0;  i < GameManager.m_cInstance.playerStatus.skillList.Count; i++)
+        {
+            if (GameManager.m_cInstance.playerStatus.skillList[i].skillCode == skill.skillCode)
+            {
+                GameManager.m_cInstance.playerStatus.skillList[i].isHave = true;
+            }
+
+            break;
+        }
     }
 }
