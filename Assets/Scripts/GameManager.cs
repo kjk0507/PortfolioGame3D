@@ -148,6 +148,15 @@ public class GameManager : MonoBehaviour
                 {
                     PopupSkill();
                 }
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    foreach (GameObject popup in popupGUIList)
+                    {
+                        popup.SetActive(false);
+                    }
+                    m_guiInventory.ResetIventoryButton();
+                    m_guiSkillList.ResetSkillList();
+                }
                 break;
             case E_GUI_STATE.STORE:
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -227,7 +236,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0;
                 break;
             case E_GUI_STATE.THEEND:
-                Time.timeScale = 0;
+                Time.timeScale = 1;
                 break;
             case E_GUI_STATE.GAMEOVER:
                 Time.timeScale = 1;
@@ -352,10 +361,13 @@ public class GameManager : MonoBehaviour
 
     public void ChangeFortressMode()
     {
-        m_curGUIState = E_GUI_STATE.PLAY;
-        activeFortress.GetComponent<FortressControl>().ChangeFortressStatus();
-        playerStatus.maxHp = playerStatus.maxHp - playerFortessStatus.plusHP;
-        playerStatus.curHp = playerStatus.maxHp;
+        // 포폴용 게임 엔딩으로 임시 변경
+        //m_curGUIState = E_GUI_STATE.PLAY;
+        //activeFortress.GetComponent<FortressControl>().ChangeFortressStatus();
+        //playerStatus.maxHp = playerStatus.maxHp - playerFortessStatus.plusHP;
+        //playerStatus.curHp = playerStatus.maxHp;
+        m_curGUIState = E_GUI_STATE.THEEND;
+        Invoke("LoadTitleScene", 2f);
     }
 
     public void WaveStatus()

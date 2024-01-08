@@ -70,58 +70,61 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         // 피격 시 모든 움직임 정지
-        if(!isDamage || !isStop)
+        if (!isStop)
         {
-            // 좌우 이동 구현
-            if (isMove)
+            if(!isDamage)
             {
-                inputHorizontal = Input.GetAxisRaw("Horizontal");
-
-                if (inputHorizontal > 0)
+                // 좌우 이동 구현
+                if (isMove)
                 {
-                    m_transform.localScale = new Vector3(2, 2, 2);
+                    inputHorizontal = Input.GetAxisRaw("Horizontal");
+
+                    if (inputHorizontal > 0)
+                    {
+                        m_transform.localScale = new Vector3(2, 2, 2);
+                    }
+                    else if (inputHorizontal < 0)
+                    {
+                        m_transform.localScale = new Vector3(2, 2, -2);
+                    }
                 }
-                else if (inputHorizontal < 0)
+
+                // 점프 구현
+                if (Input.GetKeyDown(KeyCode.Space) && !inputJump && jumpCount < 2)
                 {
-                    m_transform.localScale = new Vector3(2, 2, -2);
+                    inputJump = true;
                 }
-            }
 
-            // 점프 구현
-            if (Input.GetKeyDown(KeyCode.Space) && !inputJump && jumpCount < 2)
-            {
-                inputJump = true;
-            }
-
-            // (임시)더블 점프 구현
-            //if (Input.GetKeyDown(KeyCode.Q))
-            //{
-            //    IsDoubleJump = true;
-            //}
+                // (임시)더블 점프 구현
+                //if (Input.GetKeyDown(KeyCode.Q))
+                //{
+                //    IsDoubleJump = true;
+                //}
             
-            if(m_skillManager.FindSkillTrue(GameManager.m_cInstance.playerStatus, "SP_01"))
-            {
-                IsDoubleJump = true;
-            }
+                if(m_skillManager.FindSkillTrue(GameManager.m_cInstance.playerStatus, "SP_01"))
+                {
+                    IsDoubleJump = true;
+                }
 
-            // 공격 구현
-            if (Input.GetKeyDown(KeyCode.Z) && !inputAttack)
-            {
-                inputAttack = true;
-                //ShotArrow();
-                lastAttackTime = Time.time;
-            }
+                // 공격 구현
+                if (Input.GetKeyDown(KeyCode.Z) && !inputAttack)
+                {
+                    inputAttack = true;
+                    //ShotArrow();
+                    lastAttackTime = Time.time;
+                }
 
-            // 방어막 구현
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                GenerateShield();
-            }
+                // 방어막 구현
+                if (Input.GetKeyDown(KeyCode.B))
+                {
+                    GenerateShield();
+                }
 
-            // 방어막이 생성되어 있고 플레이어가 존재한다면 플레이어를 따라다니게 함
-            if (currentShield != null && m_transform != null)
-            {
-                UpdateShieldPosition();
+                // 방어막이 생성되어 있고 플레이어가 존재한다면 플레이어를 따라다니게 함
+                if (currentShield != null && m_transform != null)
+                {
+                    UpdateShieldPosition();
+                }
             }
         }
 
@@ -526,6 +529,7 @@ public class PlayerControl : MonoBehaviour
         Vector3 shieldPosition = new Vector3(m_transform.position.x, m_transform.position.y + 1.5f, m_transform.position.z);
 
         // 방어막 생성 및 위치 설정
+        shieldPrefab.transform.localScale = new Vector3(5f, 5f, 5f);
         currentShield = Instantiate(shieldPrefab, shieldPosition, Quaternion.identity);
 
         StartCoroutine(DestroyShield(currentShield, 3f));
