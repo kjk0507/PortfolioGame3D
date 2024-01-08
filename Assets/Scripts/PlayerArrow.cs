@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerArrow : MonoBehaviour
 {
     bool hasTriggered = false;
+    bool isCollision = false;
 
     private void Start()
     {
@@ -26,6 +27,7 @@ public class PlayerArrow : MonoBehaviour
                 {
                     collision.transform.root.GetComponent<EnemyControl_Wave>().m_status.Demeged(1);
                 }
+                isCollision = true;
             }
 
             if(collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
@@ -33,8 +35,13 @@ public class PlayerArrow : MonoBehaviour
                 hasTriggered = true;
                 this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 Invoke("DelayDestroy", 1f);
+                isCollision = true;
             }
         }
+    }
+    private void OnTriggerExit(Collider collision)
+    {
+        isCollision = false;
     }
 
     void DelayDestroy()

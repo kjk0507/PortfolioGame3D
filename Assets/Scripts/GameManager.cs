@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI enemyNum;
     public float countdownDuration = 60f;  // wave 시간
     private float currentTime;
+    public bool isAttackCheck = false;
+    public bool isDragonAttak = false;
 
     // 상태창, 인벤토리, 스킬
     [SerializeField] ItemManager m_cItemManager = new ItemManager();  // 모든 아이템 리스트가 포함
@@ -76,6 +78,7 @@ public class GameManager : MonoBehaviour
         WaveTimer();
         WaveStatus();
         IsPain();
+        CheckDragonAttack();
     }
 
     void EventUpdateStatus()
@@ -408,5 +411,20 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         m_comment.gameObject.SetActive(false);
+    }
+
+    private void CheckDragonAttack()
+    {
+        if(isDragonAttak && !isAttackCheck)
+        {
+            isAttackCheck = true;
+            Invoke("ChangeDragonAttack", 1f);
+        }
+    }
+
+    private void ChangeDragonAttack()
+    {
+        isDragonAttak = false;
+        isAttackCheck = false;
     }
 }

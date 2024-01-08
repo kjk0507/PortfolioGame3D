@@ -82,7 +82,7 @@ public class FortressControl : MonoBehaviour
             // 생성 위치 부분에 위에서 만든 함수 Return_RandomPosition() 함수 대입
             // 이거 복사시 게임 오브젝트에 데이터 입력이 가능할까? -> 입력하고 소환한다면? -> 되네
             int randomNum = Random.Range(0,11);
-            if(randomNum > 8)
+            if(randomNum > 9)
             {
                 m_enemy = m_enemyType[1];
             }

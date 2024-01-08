@@ -12,6 +12,9 @@ public class EnemyControl_Wave : MonoBehaviour
     Animator m_animator;
 
     public GameObject m_enemyHitBox;
+    public GameObject m_fire;
+    public GameObject m_firePostion;
+    public bool isHit = false;
 
     public Status m_status = new Status();
 
@@ -52,6 +55,7 @@ public class EnemyControl_Wave : MonoBehaviour
         if (m_status.IsDeath())
         {
             e_status = E_AI_STATUS.DEATH;
+            CancelInvoke();
         }
 
         m_animator.SetInteger("e_status", (int)e_status);
@@ -152,9 +156,28 @@ public class EnemyControl_Wave : MonoBehaviour
             {
                 isAttack = false;
                 m_rigidbody.velocity = Vector3.zero;
+                for (float i = 1; i < 3; i = i + 0.1f)
+                {
+                    Invoke("DragonFire", i);
+                }                
+                //Invoke("DragonFire", 2f);
                 Invoke("ChangeStatus", 3f);
             }
         }
+    }
+
+    public void DragonFire()
+    {
+        Quaternion rotation = new Quaternion();
+        rotation = Quaternion.Euler(30f, 270f, 0f);
+        GameObject objArrowFire = Instantiate(m_fire, m_firePostion.transform.position, rotation);
+        StartCoroutine(DestoryFire(objArrowFire));
+    }
+
+    public IEnumerator DestoryFire(GameObject objArrowFire)
+    {
+        yield return new WaitForSeconds(5f);
+        Destroy(objArrowFire);
     }
 
     void ProcessSkill(E_Enemy_Type e_enemyType)

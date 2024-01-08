@@ -58,7 +58,6 @@ public class AutoTurretMovement : MonoBehaviour
     {
         if (!isShot)
         {
-            Debug.Log("shot");
             isShot = true;
 
             for (int i = 0; i < 4; i++)
