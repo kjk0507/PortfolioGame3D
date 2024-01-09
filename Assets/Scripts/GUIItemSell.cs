@@ -21,7 +21,7 @@ public class GUIItemSell : MonoBehaviour
         itemInfoList[(int)E_ITEM_INFO.EXPLAIN].text = "설명 : " + item.explain;
         itemInfoList[(int)E_ITEM_INFO.NUM].text = "보유 수량 : " + item.num;
         itemInfoList[(int)E_ITEM_INFO.PRICE].text = "판매가격 : " + item.money;
-        //icon.sprite = Resources.Load<Sprite>("Images/RPG_inventory_icons/" + skill.icon);
+        icon.sprite = Resources.Load<Sprite>("Images/ItemImage/" + item.icon);
         m_buyButton.onClick.AddListener(() => { TrytoSellItem(item); });
     }
 

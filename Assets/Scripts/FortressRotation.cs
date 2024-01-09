@@ -9,7 +9,7 @@ public class FortressRotation : MonoBehaviour
     public float minRotationAngle = 0f; // 최소 회전 각도
     bool inputAttack = false;
     bool isShot = false;
-    public GameObject playerArrow;
+    public GameObject playerBullet;
     public GameObject shotPosition;
     Transform m_transform;
     public float shotPower = 5f;
@@ -55,11 +55,12 @@ public class FortressRotation : MonoBehaviour
         inputAttack = false;
         Quaternion rotation = new Quaternion();
         //rotation = Quaternion.Euler(-transform.rotation.eulerAngles.z, 90f, 0f);
+        rotation = Quaternion.Euler(-transform.rotation.eulerAngles.z, 90f, 0f);
 
         if (!isShot)
         {
             isShot = true;
-            GameObject objArrow = Instantiate(playerArrow, shotPosition.transform.position, rotation);
+            GameObject objArrow = Instantiate(playerBullet, shotPosition.transform.position, rotation);
             //objArrow.GetComponent<Rigidbody>().velocity = new Vector3(m_transform.localScale.z * shotPower, 0, 0);
             Vector3 direction = (shotPosition.transform.position - m_transform.position).normalized;
             objArrow.GetComponent<Rigidbody>().velocity = direction * shotPower;

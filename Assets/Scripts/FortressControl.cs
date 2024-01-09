@@ -62,9 +62,10 @@ public class FortressControl : MonoBehaviour
         if (isWaving)
         {
             // 방어막 구현
-            if (Input.GetKeyDown(KeyCode.B))
+            if (Input.GetKeyDown(KeyCode.B) && GameManager.m_cInstance.FindItemNum("IC_01") > 0 && GameManager.m_cInstance.FindSkillActive("SA_01"))
             {
                 GenerateShield();
+                GameManager.m_cInstance.UseItem("IC_01");
             }
         }
     }

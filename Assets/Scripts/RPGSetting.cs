@@ -229,11 +229,11 @@ namespace RPGSetting
         List<Skill> m_listSkillManager = new List<Skill>();
         public void Init()
         {
-            m_listSkillManager.Add(new Skill("Active", "both" , "SA_01", "실드", "barrier", false, "베리어 입니다.", 1000, "A", 5f, "B", "보석 1"));
-            m_listSkillManager.Add(new Skill("Active", "both", "SA_02", "회복", "repair", false, "회복입니다.", 2000, "A", 5f, "C", "보석 1")); 
-            m_listSkillManager.Add(new Skill("Active", "fortress","SA_03", "포격", "bomb", false, "저장해둔 포탄을 발사합니다.", 1000, "A", 5f, "X", "보석 2"));
-            m_listSkillManager.Add(new Skill("Active", "fortress", "SA_04", "상점포격", "bomb2", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다.", 1000, "A", 5f, "D", "보석 1"));
-            m_listSkillManager.Add(new Skill("Pasive", "player", "SP_01", "이단점프", "DubbleJump", true, "이단 점프가 가능합니다.", 1000, "A", 0f, "없음", "보석 1"));
+            m_listSkillManager.Add(new Skill("Active", "both" , "SA_01", "실드", "a_barrier", false, "베리어 입니다.", 1000, "A", 5f, "B", "보석 1"));
+            m_listSkillManager.Add(new Skill("Active", "both", "SA_02", "회복", "a_repair", false, "회복입니다.", 2000, "A", 5f, "C", "보석 1")); 
+            m_listSkillManager.Add(new Skill("Active", "fortress","SA_03", "포격", "a_bomb", false, "저장해둔 포탄을 발사합니다.", 1000, "A", 5f, "X", "보석 2"));
+            m_listSkillManager.Add(new Skill("Active", "fortress", "SA_04", "상점포격", "a_bombMoney", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다.", 2000, "A", 5f, "D", "보석 1"));
+            m_listSkillManager.Add(new Skill("Pasive", "player", "SP_01", "이단점프", "p_dubbleJump", false, "이단 점프가 가능합니다.", 1000, "A", 0f, "없음", "보석 1"));
         }
 
         public void SetPlayerAllData(Status player)
@@ -319,15 +319,21 @@ namespace RPGSetting
 
         public void Init()
         {
-            m_listItemManager.Add(new Item("etc", "IE_01", "test1", "axe", 1, "A","test1", 10)); //0
-            m_listItemManager.Add(new Item("etc", "IE_02", "test2", "bag", 1, "A", "test1", 10)); //0
-            m_listItemManager.Add(new Item("etc", "IE_03", "test3", "boots", 1, "A", "test1", 10)); //0
-            m_listItemManager.Add(new Item("etc", "IE_04", "test4", "cloaks", 1, "A", "test1", 10)); //0
+            m_listItemManager.Add(new Item("consum", "IC_01", "실드 배터리", "c_battery", 1, "상점 구매","실드를 시용할 때 마다 하나씩 소모된다.", 500));
+            m_listItemManager.Add(new Item("consum", "IC_02", "포탄", "c_bomb", 1, "상점 구매", "요새 모드에서 포탄을 사용할 때 마다 하나씩 소모된다.", 1000));
+            m_listItemManager.Add(new Item("etc", "IE_01", "뼈", "e_bone", 1, "상점 구매", "스켈레톤을 쓰러뜨리고 얻은 물건이다.", 10));
+            m_listItemManager.Add(new Item("etc", "IE_02", "붉은 보석", "e_redgem", 1, "상점 구매", "드래곤을 쓰러뜨리고 얻은 물건이다.", 2000));
 
-            m_allItemList.Add(new Item("etc", "IE_01", "test1", "axe", 1, "A", "test1", 10)); //0
-            m_allItemList.Add(new Item("etc", "IE_02", "test2", "bag", 1, "A", "test1", 10)); //0
-            m_allItemList.Add(new Item("etc", "IE_03", "test3", "boots", 1, "A", "test1", 10)); //0
-            m_allItemList.Add(new Item("etc", "IE_04", "test4", "cloaks", 1, "A", "test1", 10)); //0
+            m_allItemList.Add(new Item("consum", "IC_01", "실드 배터리", "c_battery", 1, "상점 구매", "실드를 시용할 때 마다 하나씩 소모된다.", 500));
+            m_allItemList.Add(new Item("consum", "IC_02", "포탄", "c_bomb", 1, "상점 구매", "요새 모드에서 포탄을 사용할 때 마다 하나씩 소모된다.", 1000));
+            m_allItemList.Add(new Item("etc", "IE_01", "뼈", "e_bone", 1, "상점 구매", "스켈레톤을 쓰러뜨리고 얻은 물건이다.", 10));
+            m_allItemList.Add(new Item("etc", "IE_02", "붉은 보석", "e_redgem", 1, "상점 구매", "드래곤을 쓰러뜨리고 얻은 물건이다.", 2000));
+
+            //m_listItemManager.Add(new Item("etc", "IE_01", "test1", "axe", 1, "A", "test1", 10));
+            //m_listItemManager.Add(new Item("etc", "IE_02", "test2", "bag", 1, "A", "test1", 10));
+            //m_listItemManager.Add(new Item("etc", "IE_03", "test3", "boots", 1, "A", "test1", 10));
+            //m_listItemManager.Add(new Item("etc", "IE_04", "test4", "cloaks", 1, "A", "test1", 10));
+
         }
 
         public void SetPlayerAllData(Status player)

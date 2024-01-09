@@ -26,6 +26,21 @@ public class GameManager : MonoBehaviour
     public E_GUI_STATE m_curGUIState;
     bool isDeath = false;
 
+    // 소모품 관련(play)
+    public TextMeshProUGUI m_batteryNum;
+    public TextMeshProUGUI m_bombNum;
+    public TextMeshProUGUI m_goldNum;
+
+    // 소모품 관련(play wave)
+    public TextMeshProUGUI m_wave_batteryNum;
+    public TextMeshProUGUI m_wave_bombNum;
+    public TextMeshProUGUI m_wave_goldNum;
+
+    // 소모품 관련(play store)
+    public TextMeshProUGUI m_store_batteryNum;
+    public TextMeshProUGUI m_store_bombNum;
+    public TextMeshProUGUI m_store_goldNum;
+
     // wave 관련
     public bool isPlayWave = false;  // wave 상태여부
     public GameObject activeFortress; // 활성화된 요새
@@ -93,6 +108,76 @@ public class GameManager : MonoBehaviour
 
             Invoke("LoadTitleScene", 2f);
         }
+        CheckConsumNum();
+    }
+
+    public void CheckConsumNum()
+    {
+        m_batteryNum.text = FindItemNum("IC_01").ToString();
+        m_bombNum.text = FindItemNum("IC_02").ToString();
+        m_goldNum.text = playerStatus.money.ToString();
+
+        m_wave_batteryNum.text = FindItemNum("IC_01").ToString();
+        m_wave_bombNum.text = FindItemNum("IC_02").ToString();
+        m_wave_goldNum.text = playerStatus.money.ToString();
+
+        m_store_batteryNum.text = FindItemNum("IC_01").ToString();
+        m_store_bombNum.text = FindItemNum("IC_02").ToString();
+        m_store_goldNum.text = playerStatus.money.ToString();
+    }
+
+    public int FindItemNum(string itemCode)
+    {
+        int num = 0;
+
+        if(playerStatus.inventory != null)
+        {
+            for(int i = 0; i < playerStatus.inventory.Count; i++)
+            {
+                if (playerStatus.inventory[i].itemCode == itemCode)
+                {
+                    num = playerStatus.inventory[i].num;
+                    break;
+                }
+            }
+        }
+
+        return num;
+    }
+
+    public void UseItem(string itemCode)
+    {
+        if (playerStatus.inventory != null)
+        {
+            for (int i = 0; i < playerStatus.inventory.Count; i++)
+            {
+                if (playerStatus.inventory[i].itemCode == itemCode)
+                {
+                    playerStatus.inventory[i].num--;
+                    break;
+                }
+            }
+        }
+    }
+
+    public bool FindSkillActive(string skillCode)
+    {
+        bool result = false;
+
+        if(playerStatus.skillList != null)
+        {
+            for(int i = 0; i < playerStatus.skillList.Count; i++)
+            {
+                if (playerStatus.skillList[i].skillCode == skillCode)
+                {
+                    if (playerStatus.skillList[i].isHave)
+                    {
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     void SetHPBar(float cur, float max)

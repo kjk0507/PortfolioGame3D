@@ -115,9 +115,10 @@ public class PlayerControl : MonoBehaviour
                 }
 
                 // 방어막 구현
-                if (Input.GetKeyDown(KeyCode.B))
+                if (Input.GetKeyDown(KeyCode.B) && GameManager.m_cInstance.FindItemNum("IC_01") > 0 && GameManager.m_cInstance.FindSkillActive("SA_01"))
                 {
                     GenerateShield();
+                    GameManager.m_cInstance.UseItem("IC_01");
                 }
 
                 // 방어막이 생성되어 있고 플레이어가 존재한다면 플레이어를 따라다니게 함

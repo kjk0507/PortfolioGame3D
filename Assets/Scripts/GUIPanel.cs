@@ -17,7 +17,7 @@ public class GUIPanel : MonoBehaviour
         //    Destroy(m_itemImage.sprite);
         //}
 
-        m_itemImage.sprite = Resources.Load<Sprite>("Images/RPG_inventory_icons/" + item.icon);
+        m_itemImage.sprite = Resources.Load<Sprite>("Images/ItemImage/" + item.icon);
         m_textComment.text = item.explain;
     }
 }

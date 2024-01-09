@@ -9,8 +9,9 @@ public class GUISkill : MonoBehaviour
 {
     [SerializeField] List<TextMeshProUGUI> skillInfoList = new List<TextMeshProUGUI>();
     public Image icon;
+    public TextMeshProUGUI skillName;
     public Button m_buyButton;
-    public enum E_SKILL_INFO { NAME, TYPE, DROP, EXPLAIN, COOLDOWN, Require, ICON, BUTTON}
+    public enum E_SKILL_INFO { NAME, TYPE, DROP, EXPLAIN, COOLDOWN, REQUIRE, PRESSKEY, ICON, BUTTON }
 
     public void SettingSkill(Skill skill)
     {
@@ -19,8 +20,9 @@ public class GUISkill : MonoBehaviour
         skillInfoList[(int)E_SKILL_INFO.DROP].text = "획득처 : " + skill.dropLocation;
         skillInfoList[(int)E_SKILL_INFO.EXPLAIN].text = "설명 : " + skill.explain;
         skillInfoList[(int)E_SKILL_INFO.COOLDOWN].text = "쿨타임 : " + skill.coolDown;
-        skillInfoList[(int)E_SKILL_INFO.Require].text = "제작조건 : " + skill.Require + " + " + skill.money + " 골드";
-        //icon.sprite = Resources.Load<Sprite>("Images/RPG_inventory_icons/" + skill.icon);
+        skillInfoList[(int)E_SKILL_INFO.REQUIRE].text = "제작조건 : " + skill.Require + " + " + skill.money + " 골드";
+        skillInfoList[(int)E_SKILL_INFO.PRESSKEY].text = "단축키 : " + skill.pressKey;
+        icon.sprite = Resources.Load<Sprite>("Images/Skillmage/" + skill.icon);
         if(m_buyButton != null)
         {
             if (skill.isHave)
@@ -71,10 +73,11 @@ public class GUISkill : MonoBehaviour
     // 스킬 구매
     public void TrytoBuySkill(Skill skill)
     {
-        if(skill.money < GameManager.m_cInstance.playerStatus.money)
+        if(skill.money <= GameManager.m_cInstance.playerStatus.money)
         {
             ChangeIsHave(skill);
             m_buyButton.gameObject.SetActive(false);
+            skillName.text = skill.name + (skill.isHave ? " (습득)" : " (미습득)");
             GameManager.m_cInstance.playerStatus.money -= skill.money;
             GameManager.m_cInstance.SetComment("구매했습니다.");
         }
@@ -92,9 +95,8 @@ public class GUISkill : MonoBehaviour
             if (GameManager.m_cInstance.playerStatus.skillList[i].skillCode == skill.skillCode)
             {
                 GameManager.m_cInstance.playerStatus.skillList[i].isHave = true;
+                break;
             }
-
-            break;
         }
     }
 }

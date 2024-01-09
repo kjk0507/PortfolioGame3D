@@ -22,7 +22,7 @@ public class GUIItemBuy : MonoBehaviour
         itemInfoList[(int)E_ITEM_INFO.EXPLAIN].text = "설명 : " + item.explain;
         itemInfoList[(int)E_ITEM_INFO.NUM].text = "보유 수량 : " + FindItemNum(item);
         itemInfoList[(int)E_ITEM_INFO.PRICE].text = "구매가격 : " + item.money;
-        //icon.sprite = Resources.Load<Sprite>("Images/RPG_inventory_icons/" + skill.icon);
+        icon.sprite = Resources.Load<Sprite>("Images/ItemImage/" + item.icon);
         m_buyButton.onClick.AddListener(() => { TrytoBuyItem(item); });
     }
 
@@ -63,7 +63,7 @@ public class GUIItemBuy : MonoBehaviour
 
     public void TrytoBuyItem(Item item)
     {
-        if (item.money < GameManager.m_cInstance.playerStatus.money)
+        if (item.money <= GameManager.m_cInstance.playerStatus.money)
         {
             ChangeItemNum(item);
             //m_buyButton.gameObject.SetActive(false);
