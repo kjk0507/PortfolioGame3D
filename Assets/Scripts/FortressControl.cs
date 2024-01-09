@@ -140,7 +140,7 @@ public class FortressControl : MonoBehaviour
 
             foreach (GameObject enemy in m_enemyList)
             {
-                if (enemy != null)
+                if (enemy != null && enemy.GetComponent<EnemyControl_Wave>() != null && !enemy.GetComponent<EnemyControl_Wave>().m_status.IsDeath())
                 {
                     count++;
                 }
@@ -149,6 +149,7 @@ public class FortressControl : MonoBehaviour
             m_curEnemy = count;
         }
     }
+
     void GenerateShield()
     {
         // 이미 생성된 방어막이 있다면 제거

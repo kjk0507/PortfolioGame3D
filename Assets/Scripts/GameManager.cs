@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     private float currentTime;
     public bool isAttackCheck = false;
     public bool isDragonAttak = false;
+    private bool isWaveCoroutineRun = false;
 
     // 상태창, 인벤토리, 스킬
     [SerializeField] ItemManager m_cItemManager = new ItemManager();  // 모든 아이템 리스트가 포함
@@ -272,6 +273,7 @@ public class GameManager : MonoBehaviour
         {
             m_guiInventory.SetIventory(playerStatus);
             m_guiSkillList.SetSkill(playerStatus);
+            m_guiStatus.SettingStatus(playerStatus, playerFortessStatus);
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
@@ -294,12 +296,14 @@ public class GameManager : MonoBehaviour
     {
         if (popupGUIList[(int)E_GUI_POPUP.STATUS].activeSelf == false)
         {
+            m_guiInventory.SetIventory(playerStatus);
+            m_guiSkillList.SetSkill(playerStatus);
+            m_guiStatus.SettingStatus(playerStatus, playerFortessStatus);
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
             }
             popupGUIList[(int)E_GUI_POPUP.STATUS].SetActive(true);
-            m_guiStatus.SettingStatus(playerStatus, playerFortessStatus);
         }
         else
         {
@@ -307,6 +311,8 @@ public class GameManager : MonoBehaviour
             {
                 popup.SetActive(false);
             }
+            m_guiInventory.ResetIventoryButton();
+            m_guiSkillList.ResetSkillList();
         }
     }
 
@@ -316,6 +322,7 @@ public class GameManager : MonoBehaviour
         {
             m_guiInventory.SetIventory(playerStatus);
             m_guiSkillList.SetSkill(playerStatus);
+            m_guiStatus.SettingStatus(playerStatus, playerFortessStatus);
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
@@ -378,8 +385,27 @@ public class GameManager : MonoBehaviour
             int curNum = activeFortress.GetComponent<FortressControl>().m_curEnemy;
             string enemyCountText = curNum.ToString() + " / " + maxNum.ToString();
             enemyNum.text = enemyCountText;
+
+            if (curNum == 0 && !isWaveCoroutineRun)
+            {
+                StartCoroutine(CheckEnemyNum());
+            }
+        }        
+    }
+
+    public IEnumerator CheckEnemyNum()
+    {
+        isWaveCoroutineRun = true;
+        yield return new WaitForSeconds(2f);
+        isWaveCoroutineRun = false;
+
+        int curNum = activeFortress.GetComponent<FortressControl>().m_curEnemy;
+
+        if (curNum == 0)
+        {
+            isTimerStart = false;
+            ChangeFortressMode();
         }
-        
     }
 
     public void IsPain()

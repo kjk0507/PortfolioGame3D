@@ -14,7 +14,7 @@ public class GUISkill : MonoBehaviour
 
     public void SettingSkill(Skill skill)
     {
-        skillInfoList[(int)E_SKILL_INFO.NAME].text = skill.name;
+        skillInfoList[(int)E_SKILL_INFO.NAME].text = skill.name + (skill.isHave ? " (습득)" : " (미습득)");
         skillInfoList[(int)E_SKILL_INFO.TYPE].text = "분류 : " + (skill.type == "Active" ? "액티브" : "패시브") + (skill.modeType == "both" ? "(요새 겸용)" : "");
         skillInfoList[(int)E_SKILL_INFO.DROP].text = "획득처 : " + skill.dropLocation;
         skillInfoList[(int)E_SKILL_INFO.EXPLAIN].text = "설명 : " + skill.explain;
