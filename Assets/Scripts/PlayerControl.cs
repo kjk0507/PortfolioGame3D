@@ -192,6 +192,12 @@ public class PlayerControl : MonoBehaviour
 
         // 가능한 동작 : Running, StandingShot, Jump, Throw, Damage
         // 윗 코드는 동작 전달, 밑 코드는 그 함수에서 해야할 동작
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         // 피격 받을 시 멈춤
         if (isDamage)
         {
@@ -223,6 +229,12 @@ public class PlayerControl : MonoBehaviour
     void ProcessRunning()
     {
         // 가능한 동작 : Standing, RunningShot, Jump, Damage
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -255,6 +267,12 @@ public class PlayerControl : MonoBehaviour
     void ProcessStandingShout()
     {
         // 가능한 동작 : Standing, Running, Jump, Damage
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -291,6 +309,12 @@ public class PlayerControl : MonoBehaviour
     void ProcessRunningShot()
     {
         // 가능한 동작 : Standing, Running, Jump, Damage
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -328,6 +352,12 @@ public class PlayerControl : MonoBehaviour
         m_animator.SetBool("isGround", false);
 
         // 가능한 동작 : Standing, DoubleJump, Damage
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;
@@ -369,6 +399,12 @@ public class PlayerControl : MonoBehaviour
     void ProcessDoubleJump()
     {
         m_animator.SetBool("isGround", false);
+        if (isStop)
+        {
+            playerState = E_Player_State.STANDING;
+            return;
+        }
+
         if (isDamage)
         {
             playerState = E_Player_State.DAMAGE;

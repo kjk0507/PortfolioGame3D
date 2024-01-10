@@ -233,7 +233,7 @@ namespace RPGSetting
             m_listSkillManager.Add(new Skill("Active", "both", "SA_02", "회복", "a_repair", false, "회복입니다.", 2000, "A", 5f, "C", "보석 1")); 
             m_listSkillManager.Add(new Skill("Active", "fortress","SA_03", "포격", "a_bomb", false, "저장해둔 포탄을 발사합니다.", 1000, "A", 5f, "X", "보석 2"));
             m_listSkillManager.Add(new Skill("Active", "fortress", "SA_04", "상점포격", "a_bombMoney", false, "상점에서 포탄을 발사합니다. 골드가 소모됩니다.", 2000, "A", 5f, "D", "보석 1"));
-            m_listSkillManager.Add(new Skill("Pasive", "player", "SP_01", "이단점프", "p_dubbleJump", false, "이단 점프가 가능합니다.", 1000, "A", 0f, "없음", "보석 1"));
+            m_listSkillManager.Add(new Skill("Pasive", "player", "SP_01", "이단점프", "p_doubleJump", false, "이단 점프가 가능합니다.", 1000, "A", 0f, "없음", "보석 1"));
         }
 
         public void SetPlayerAllData(Status player)
