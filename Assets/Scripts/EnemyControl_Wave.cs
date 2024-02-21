@@ -15,6 +15,8 @@ public class EnemyControl_Wave : MonoBehaviour
     public GameObject m_fire;
     public GameObject m_firePostion;
     public bool isHit = false;
+    //public AudioClip myAudioClip;
+    public AudioSource m_fireSound;
 
     public Status m_status = new Status();
 
@@ -156,6 +158,9 @@ public class EnemyControl_Wave : MonoBehaviour
             {
                 isAttack = false;
                 m_rigidbody.velocity = Vector3.zero;
+
+                Invoke("DragonFireSound", 1);
+
                 for (float i = 1; i < 3; i = i + 0.1f)
                 {
                     Invoke("DragonFire", i);
@@ -164,6 +169,12 @@ public class EnemyControl_Wave : MonoBehaviour
                 Invoke("ChangeStatus", 3f);
             }
         }
+    }
+    public void DragonFireSound()
+    {
+        AudioSource audioSource = gameObject.GetComponent<AudioSource>();
+        audioSource.pitch = 0.5f;
+        audioSource.Play();
     }
 
     public void DragonFire()

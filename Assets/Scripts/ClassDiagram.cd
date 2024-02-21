@@ -1,62 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="EnemyControl">
-    <Position X="2.5" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Enum Name="EnemyControl.E_Enemy_Type" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Assets\Scripts\EnemyControll.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="EnemyControl.E_AI_STATUS" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Assets\Scripts\EnemyControll.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AwQAARBrAiAIEACAAIgEAAIAAAUAAKAAQBAIAAECABA=</HashCode>
-      <FileName>Assets\Scripts\EnemyControll.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="PlayerControl">
-    <Position X="0.5" Y="0.5" Width="1.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Enum Name="PlayerControl.E_Player_State" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Assets\Scripts\PlayerControl.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>BAQsARlIAiAAAACBCEAAIEKEAABBAAAwkYABCAACAIA=</HashCode>
-      <FileName>Assets\Scripts\PlayerControl.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="PlayerControl_org" Collapsed="true">
-    <Position X="15.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAQAAQAIAiAAAAAAAEAAIEKAAABAAAAgkAAACAACAAA=</HashCode>
-      <FileName>Assets\Scripts\PlayerControl_org.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="RPGSetting.Status">
-    <Position X="6.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAIEAAAAAAAAAAAACEEAACACAEgFABAAAAAAAAFoAAA=</HashCode>
+      <HashCode>EAIEAAAAAAAAAEAACFEAACACAEgFABEDIAEAAAFoEAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.FortressStatus">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAACAAAAAAAAAACAAAAAAIACDCAQAAABBIAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.Skill">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAEAAAAAAIAAAAAAAFAAQAGRAAAAAAEAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.SkillManager">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAACAAAgAAAEAACAAAAAAA=</HashCode>
       <FileName>Assets\Scripts\RPGSetting.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="RPGSetting.Item">
-    <Position X="4.5" Y="0.5" Width="1.5" />
+    <Position X="11" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABDAAAAAAAQAAAAAAAAAAAAAFAAQAAQAAAAAAEAA=</HashCode>
+      <HashCode>AAAABDAAAAAAAQAAAAAAAAAAAAAFAAQAEQAAAAAAEAA=</HashCode>
+      <FileName>Assets\Scripts\RPGSetting.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RPGSetting.ItemManager">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAgEAAAAACAAgAAAA=</HashCode>
       <FileName>Assets\Scripts\RPGSetting.cs</FileName>
     </TypeIdentifier>
   </Class>

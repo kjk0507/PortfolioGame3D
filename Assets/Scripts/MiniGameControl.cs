@@ -2,36 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
-public class FortressStore : MonoBehaviour
+public class MiniGameControl : MonoBehaviour
 {
     public GameObject m_player;
-    public bool isStore = false;
+    public bool isMiniGame = false;
     bool isPress = false;
     bool isExit = false;
 
-    private void Update()
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         if (m_player != null)
         {
             if (Input.GetKeyDown(KeyCode.A) || isPress)
-            {
-                //GameManager.m_cInstance.EventChageScene(5);
-                GameManager.m_cInstance.VisitStore();
+            {                
+                GameManager.m_cInstance.PlayMiniGame();
                 GameManager.m_cInstance.HideControler();
-                DontMove();
-                isStore = true;
                 isPress = false;
+                DontMove();
+                isMiniGame = true;
             }
 
             if (Input.GetKeyDown(KeyCode.Escape) || isExit)  //  || (Input.GetKeyDown(KeyCode.A) && isStore)
             {
                 isExit = false;
-                GameManager.m_cInstance.LeaveStore();
+                GameManager.m_cInstance.LeaveMiniGame();
                 GameManager.m_cInstance.ChangePlayerControler();
                 CanMove();
-                isStore = false;
-                m_player.GetComponent<PlayerControl>().UpAttack();
+                isMiniGame = false;
             }
         }
     }
@@ -53,9 +58,13 @@ public class FortressStore : MonoBehaviour
             isPress = true;
         }
     }
+
     public void ExitGUIButton()
     {
-        isExit = true;
+        if (m_player != null)
+        {
+            isExit = true;
+        }        
     }
 
     private void OnTriggerEnter(Collider collision)

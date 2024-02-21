@@ -43,6 +43,7 @@ public class AutoTurretMovement : MonoBehaviour
 
     void RotateTowards(Vector3 targetPosition)
     {
+        //targetPosition.y = targetPosition.y + 1f;
         Vector3 direction = targetPosition - m_transform.position;
         Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
@@ -71,10 +72,14 @@ public class AutoTurretMovement : MonoBehaviour
 
     void FireBullet()
     {
-        Quaternion rotation = Quaternion.identity;
+        //Quaternion rotation = Quaternion.identity;
+        //Quaternion rotation = Quaternion.Euler(90f, 0f, 0f) * bullet.transform.rotation; ;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, -90f);
         GameObject objArrow = Instantiate(bullet, shotPosition.transform.position, rotation);
         //Vector3 direction = (shotPosition.transform.position - m_transform.position).normalized;
         Vector3 direction = m_transform.forward.normalized;
+        //Vector3 direction = m_transform.right.normalized;
+        //Vector3 direction = m_transform.up.normalized;
         objArrow.GetComponent<Rigidbody>().velocity = direction * 20f;
     }
 

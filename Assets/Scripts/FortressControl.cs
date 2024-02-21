@@ -28,6 +28,9 @@ public class FortressControl : MonoBehaviour
     public GameObject shieldPrefab;
     private GameObject currentShield;
 
+    bool isPress = false;
+    bool isShield = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +40,10 @@ public class FortressControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_player != null && Input.GetKeyDown(KeyCode.A) && !isWaving)
+        if(m_player != null && (Input.GetKeyDown(KeyCode.A) || isPress) && !isWaving)
         {
+            isPress = false;
+
             m_enemyList = new List<GameObject>();
 
             m_body.SetActive(true);
@@ -51,6 +56,7 @@ public class FortressControl : MonoBehaviour
 
             GameManager.m_cInstance.isPlayWave = true;
             GameManager.m_cInstance.activeFortress = m_fortress;
+            GameManager.m_cInstance.ChangeDefenseControler();
 
             isWaving = true;
 
@@ -62,11 +68,27 @@ public class FortressControl : MonoBehaviour
         if (isWaving)
         {
             // 방어막 구현
-            if (Input.GetKeyDown(KeyCode.B) && GameManager.m_cInstance.FindItemNum("IC_01") > 0 && GameManager.m_cInstance.FindSkillActive("SA_01"))
+            if ((Input.GetKeyDown(KeyCode.B) || isShield) && GameManager.m_cInstance.FindItemNum("IC_01") > 0 && GameManager.m_cInstance.FindSkillActive("SA_01"))
             {
+                isShield = false;
                 GenerateShield();
                 GameManager.m_cInstance.UseItem("IC_01");
             }
+        }
+    }
+    public void PressGUIButton()
+    {
+        if (m_player != null)
+        {
+            isPress = true;
+        }
+    }
+
+    public void PressShieldButton()
+    {
+        if (m_player != null)
+        {
+            isShield = true;
         }
     }
 

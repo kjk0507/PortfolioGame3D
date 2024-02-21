@@ -60,6 +60,12 @@ public class PlayerControl : MonoBehaviour
     // 스킬 확인
     SkillManager m_skillManager = new SkillManager();
 
+    // GUI 키 입력
+    bool m_arrowLeft = false;
+    bool m_arrowRight = false;
+    bool m_pressJump = false;
+    bool m_pressAttack = false;
+
     void Start()
     {
         m_transform = GetComponent<Transform>();
@@ -127,6 +133,28 @@ public class PlayerControl : MonoBehaviour
                     UpdateShieldPosition();
                 }
             }
+
+            // GUI 조작
+            if (m_arrowLeft)
+            {
+                MoveLeft();
+            }
+
+            if (m_arrowRight)
+            {
+                MoveRight();
+            }
+
+            if(m_pressJump)
+            {
+                MoveJump();
+            }
+
+            if(m_pressAttack)
+            { 
+                MoveAttack();
+            }
+
         }
 
         m_animator.SetInteger("playerState", (int)playerState);
@@ -172,6 +200,74 @@ public class PlayerControl : MonoBehaviour
                 ProcessDamage();
                 break;
         }
+    }
+
+    public void PressRigthArrow()
+    {
+        m_arrowRight = true;
+    }
+
+    public void UpRigthArrow()
+    {
+        m_arrowRight = false;
+    }
+
+    public void PressLeftArrow()
+    {
+        m_arrowLeft = true;
+    }
+    public void UpLeftArrow()
+    {
+        m_arrowLeft = false;
+    }
+
+    public void PressJump()
+    {
+        m_pressJump = true;
+    }
+
+    public void PressAttack()
+    {
+        m_pressAttack = true;
+    }
+
+    public void UpAttack()
+    {
+        m_pressAttack = false;
+        inputAttack = false;
+    }
+
+    void MoveLeft()
+    {
+        m_transform.localScale = new Vector3(2, 2, -2);
+        playerState = E_Player_State.RUNNING;
+        m_rigidbody.velocity = new Vector3(-1 * m_moveSpeed, m_rigidbody.velocity.y, 0);
+    }
+
+    void MoveRight()
+    {
+        m_transform.localScale = new Vector3(2, 2, 2);
+        playerState = E_Player_State.RUNNING;
+        m_rigidbody.velocity = new Vector3(1 * m_moveSpeed, m_rigidbody.velocity.y, 0);
+    }
+
+    void MoveJump()
+    {
+        m_pressJump = false;
+
+        if (IsGrounded())
+        {
+            inputJump = true;
+            playerState = E_Player_State.JUMP;
+            isJump = true;            
+            return;
+        }
+    }
+
+    void MoveAttack()
+    {
+        inputAttack = true;
+        lastAttackTime = Time.time;
     }
 
     // 상태 함수

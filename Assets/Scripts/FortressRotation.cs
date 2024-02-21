@@ -17,6 +17,11 @@ public class FortressRotation : MonoBehaviour
 
     private Quaternion defaultRotation;
 
+    bool m_arrowUp = false;
+    bool m_arrowDown = false;
+    bool m_pressShield = false;
+    bool m_pressAttack = false;
+
     private void Start()
     {
         m_transform = GetComponent<Transform>();
@@ -24,18 +29,18 @@ public class FortressRotation : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.UpArrow) || m_arrowUp)
         {
             RotateObject(rotationSpeed);
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.DownArrow) || m_arrowDown)
         {
             RotateObject(-rotationSpeed);
         }
 
         // 공격 구현
-        if (Input.GetKeyDown(KeyCode.Z) && !inputAttack)
+        if ((Input.GetKeyDown(KeyCode.Z) || m_pressAttack) && !inputAttack)
         {
             inputAttack = true;
             ShotBullet();
@@ -73,4 +78,31 @@ public class FortressRotation : MonoBehaviour
     {
         isShot = false;
     }
+
+    public void PressUpArrow()
+    {
+        m_arrowUp = true;
+    }
+
+    public void UpUpArrow()
+    {
+        m_arrowUp = false;
+    }
+
+    public void PressDownArrow()
+    {
+        m_arrowDown = true;
+    }
+    public void UpDownArrow()
+    {
+        m_arrowDown = false;
+    }
+    public void PressAttack()
+    {
+        m_pressAttack = true;
+    }
+    public void UpAttack()
+    {
+        m_pressAttack = false;
+    }    
 }

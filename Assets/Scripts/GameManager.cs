@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,9 +21,11 @@ public class GameManager : MonoBehaviour
     public GameObject m_store; // store 상위 GUI
     public GUIStoreBuy m_guiStoreBuy;
     public GUIItemSell m_guiItemSell;
+    public GameObject m_miniGame; // 미니게임 GUI
+    public GameObject m_controlerPlayer; // 컨트롤러(플레이모드)
+    public GameObject m_controlerDefense; // 컨트롤러(플레이모드)
 
-
-    public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND, PLAY_WAVE, STORE }  // GUI 상태
+    public enum E_GUI_STATE { TITLE, PLAY, GAMEOVER, THEEND, PLAY_WAVE, STORE, MINIGAME }  // GUI 상태
     public E_GUI_STATE m_curGUIState;
     bool isDeath = false;
 
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI m_store_batteryNum;
     public TextMeshProUGUI m_store_bombNum;
     public TextMeshProUGUI m_store_goldNum;
+    bool isExit = false;
 
     // wave 관련
     public bool isPlayWave = false;  // wave 상태여부
@@ -60,6 +64,10 @@ public class GameManager : MonoBehaviour
     public Status playerStatus = new Status();
     public SkillInfo playerSkill = new SkillInfo();
     public FortressStatus playerFortessStatus = new FortressStatus();
+
+    // 미니게임
+    public AstarManager m_cAStarManager;
+    public TileManager m_cTileManager;
 
 
     public List<GameObject> popupGUIList = new List<GameObject>();
@@ -104,6 +112,8 @@ public class GameManager : MonoBehaviour
         if (!isDeath && playerStatus.IsDeath())
         {
             isDeath = true;
+            m_controlerDefense.SetActive(false);
+            m_controlerPlayer.SetActive(false);
             SetGUIScene(E_GUI_STATE.GAMEOVER);
 
             Invoke("LoadTitleScene", 2f);
@@ -245,12 +255,18 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case E_GUI_STATE.STORE:
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.Escape) || isExit)
                 {
+                    isExit = false;
                     LeaveStore();
                 }
                 break;
         }
+    }
+
+    public void ExitGUIButton()
+    {
+        isExit = true;
     }
 
     public void VisitStore()
@@ -268,6 +284,7 @@ public class GameManager : MonoBehaviour
 
     public void LeaveStore()
     {
+        isExit = false;
         m_curGUIState = E_GUI_STATE.PLAY;
         m_store.SetActive(false);
     }
@@ -308,9 +325,38 @@ public class GameManager : MonoBehaviour
         currentTime = countdownDuration;
     }
 
+    public void PlayMiniGame()
+    {
+        m_miniGame.SetActive(true);
+        SetGUIScene(E_GUI_STATE.MINIGAME);
+        InitMiniGame();
+    }
+
+    public void LeaveMiniGame()
+    {
+        m_miniGame.SetActive(false);
+        SetGUIScene(E_GUI_STATE.PLAY);
+    }
+
+    public void InitMiniGame()
+    {
+        m_cAStarManager.Init();
+        m_cTileManager.Init(m_cAStarManager.SizeX, m_cAStarManager.SizeY);        
+        m_cAStarManager.PathFinding();
+    }
+
     public void EventChageScene(int stateNumber)
     {
         SetGUIScene((E_GUI_STATE)stateNumber);
+
+        if ((E_GUI_STATE)stateNumber == E_GUI_STATE.PLAY)
+        {
+            ChangePlayerControler();
+        }
+        else
+        {
+            m_controlerPlayer.SetActive(false);
+        }
     }
 
 
@@ -344,6 +390,15 @@ public class GameManager : MonoBehaviour
             else
                 m_listGUIScenes[i].SetActive(false);
         }
+
+        //if(state == E_GUI_STATE.PLAY)
+        //{
+        //    ChangePlayerControler();
+        //}
+        //else
+        //{
+        //    m_controlerPlayer.SetActive(false);
+        //}
     }
 
     void LoadTitleScene()
@@ -354,6 +409,8 @@ public class GameManager : MonoBehaviour
 
     public void PopupIventroy()
     {
+        HideControler();
+
         if (m_inventory.activeSelf == false)
         {
             m_guiInventory.SetIventory(playerStatus);
@@ -367,6 +424,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            ChangePlayerControler();
             m_inventory.SetActive(false);
             foreach (GameObject popup in popupGUIList)
             {
@@ -379,6 +437,8 @@ public class GameManager : MonoBehaviour
 
     public void PopupStatus()
     {
+        HideControler();
+
         if (popupGUIList[(int)E_GUI_POPUP.STATUS].activeSelf == false)
         {
             m_guiInventory.SetIventory(playerStatus);
@@ -392,6 +452,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            ChangePlayerControler();
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
@@ -403,6 +464,8 @@ public class GameManager : MonoBehaviour
 
     public void PopupSkill()
     {
+        HideControler();
+
         if (popupGUIList[(int)E_GUI_POPUP.SKILL].activeSelf == false)
         {
             m_guiInventory.SetIventory(playerStatus);
@@ -416,6 +479,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            ChangePlayerControler();
             foreach (GameObject popup in popupGUIList)
             {
                 popup.SetActive(false);
@@ -458,6 +522,8 @@ public class GameManager : MonoBehaviour
         //activeFortress.GetComponent<FortressControl>().ChangeFortressStatus();
         //playerStatus.maxHp = playerStatus.maxHp - playerFortessStatus.plusHP;
         //playerStatus.curHp = playerStatus.maxHp;
+        //ChangePlayerControler();
+        m_controlerDefense.SetActive(false);
         m_curGUIState = E_GUI_STATE.THEEND;
         Invoke("LoadTitleScene", 2f);
     }
@@ -522,7 +588,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator FadeOutText(TextMeshProUGUI textMeshPro)
     {
-        float fadeOutTime = 1f;
+        float fadeOutTime = 4f;
 
         float startAlpha = textMeshPro.color.a;
 
@@ -549,5 +615,23 @@ public class GameManager : MonoBehaviour
     {
         isDragonAttak = false;
         isAttackCheck = false;
+    }
+
+    public void ChangePlayerControler()
+    {
+        m_controlerPlayer.SetActive(true);
+        m_controlerDefense.SetActive(false);
+    }
+
+    public void ChangeDefenseControler()
+    {
+        m_controlerPlayer.SetActive(false);
+        m_controlerDefense.SetActive(true);
+    }
+
+    public void HideControler()
+    {
+        m_controlerPlayer.SetActive(false);
+        m_controlerDefense.SetActive(false);
     }
 }
